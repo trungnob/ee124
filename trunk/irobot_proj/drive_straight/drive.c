@@ -11,7 +11,6 @@
  */
 
 
-//Trung Sua roi ~~~
 // Includes
 #include <avr/interrupt.h>
 #include <avr/io.h>
@@ -61,6 +60,7 @@ int main (void)
   uint8_t backing_up = 0;
 
   uint8_t on_track = 1;		//Uyen
+  int16_t distance_from_center = 0; //Uyen: not yet implemented
 	
   // Set up Create and module
   initialize();
@@ -160,7 +160,12 @@ int main (void)
 		{
 			if (distance > 20)
 		    {
+				turn_dir = !turn_dir;	
 				on_track = 1;
+			    distance = 0;
+				angle = 0;
+				turning = 1;
+				turn_angle = 90;
 			}  
 			else 
 				drive(200, RadStraight);
