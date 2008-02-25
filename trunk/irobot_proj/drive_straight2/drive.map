@@ -1,0 +1,406 @@
+Archive member included because of file (symbol)
+
+E:/WinAVR/lib/gcc/avr/3.4.6/avr5\libgcc.a(_copy_data.o)
+                              drive.o (__do_copy_data)
+E:/WinAVR/lib/gcc/avr/3.4.6/avr5\libgcc.a(_clear_bss.o)
+                              drive.o (__do_clear_bss)
+E:/WinAVR/bin/../lib/gcc/avr/3.4.6/../../../../avr/lib/avr5\libc.a(random.o)
+                              drive.o (random)
+E:/WinAVR/lib/gcc/avr/3.4.6/avr5\libgcc.a(_mulsi3.o)
+                              E:/WinAVR/bin/../lib/gcc/avr/3.4.6/../../../../avr/lib/avr5\libc.a(random.o) (__mulsi3)
+E:/WinAVR/lib/gcc/avr/3.4.6/avr5\libgcc.a(_udivmodsi4.o)
+                              E:/WinAVR/bin/../lib/gcc/avr/3.4.6/../../../../avr/lib/avr5\libc.a(random.o) (__udivmodsi4)
+
+Allocating common symbols
+Common symbol       size              file
+
+sensors_in          0x34              drive.o
+sensors             0x34              drive.o
+
+Memory Configuration
+
+Name             Origin             Length             Attributes
+text             0x00000000         0x00020000         xr
+data             0x00800060         0x0000ffa0         rw !x
+eeprom           0x00810000         0x00010000         rw !x
+*default*        0x00000000         0xffffffff
+
+Linker script and memory map
+
+Address of section .data set to 0x800100
+LOAD E:/WinAVR/bin/../lib/gcc/avr/3.4.6/../../../../avr/lib/avr5/crtm168.o
+LOAD drive.o
+LOAD E:/WinAVR/bin/../lib/gcc/avr/3.4.6/../../../../avr/lib/avr5\libm.a
+LOAD E:/WinAVR/lib/gcc/avr/3.4.6/avr5\libgcc.a
+LOAD E:/WinAVR/bin/../lib/gcc/avr/3.4.6/../../../../avr/lib/avr5\libc.a
+LOAD E:/WinAVR/lib/gcc/avr/3.4.6/avr5\libgcc.a
+
+.hash
+ *(.hash)
+
+.dynsym
+ *(.dynsym)
+
+.dynstr
+ *(.dynstr)
+
+.gnu.version
+ *(.gnu.version)
+
+.gnu.version_d
+ *(.gnu.version_d)
+
+.gnu.version_r
+ *(.gnu.version_r)
+
+.rel.init
+ *(.rel.init)
+
+.rela.init
+ *(.rela.init)
+
+.rel.text
+ *(.rel.text)
+ *(.rel.text.*)
+ *(.rel.gnu.linkonce.t*)
+
+.rela.text
+ *(.rela.text)
+ *(.rela.text.*)
+ *(.rela.gnu.linkonce.t*)
+
+.rel.fini
+ *(.rel.fini)
+
+.rela.fini
+ *(.rela.fini)
+
+.rel.rodata
+ *(.rel.rodata)
+ *(.rel.rodata.*)
+ *(.rel.gnu.linkonce.r*)
+
+.rela.rodata
+ *(.rela.rodata)
+ *(.rela.rodata.*)
+ *(.rela.gnu.linkonce.r*)
+
+.rel.data
+ *(.rel.data)
+ *(.rel.data.*)
+ *(.rel.gnu.linkonce.d*)
+
+.rela.data
+ *(.rela.data)
+ *(.rela.data.*)
+ *(.rela.gnu.linkonce.d*)
+
+.rel.ctors
+ *(.rel.ctors)
+
+.rela.ctors
+ *(.rela.ctors)
+
+.rel.dtors
+ *(.rel.dtors)
+
+.rela.dtors
+ *(.rela.dtors)
+
+.rel.got
+ *(.rel.got)
+
+.rela.got
+ *(.rela.got)
+
+.rel.bss
+ *(.rel.bss)
+
+.rela.bss
+ *(.rela.bss)
+
+.rel.plt
+ *(.rel.plt)
+
+.rela.plt
+ *(.rela.plt)
+
+.text           0x00000000      0xb04
+ *(.vectors)
+ .vectors       0x00000000       0x68 E:/WinAVR/bin/../lib/gcc/avr/3.4.6/../../../../avr/lib/avr5/crtm168.o
+                0x00000000                __vectors
+                0x00000000                __vector_default
+                0x00000068                __ctors_start = .
+ *(.ctors)
+                0x00000068                __ctors_end = .
+                0x00000068                __dtors_start = .
+ *(.dtors)
+                0x00000068                __dtors_end = .
+ *(.progmem.gcc*)
+ *(.progmem*)
+                0x00000068                . = ALIGN (0x2)
+ *(.init0)
+ *(.init1)
+ *(.init2)
+ .init2         0x00000068        0xc E:/WinAVR/bin/../lib/gcc/avr/3.4.6/../../../../avr/lib/avr5/crtm168.o
+ *(.init3)
+ *(.init4)
+ .init4         0x00000074       0x16 E:/WinAVR/lib/gcc/avr/3.4.6/avr5\libgcc.a(_copy_data.o)
+                0x00000074                __do_copy_data
+ .init4         0x0000008a       0x10 E:/WinAVR/lib/gcc/avr/3.4.6/avr5\libgcc.a(_clear_bss.o)
+                0x0000008a                __do_clear_bss
+ *(.init5)
+ *(.init6)
+ *(.init7)
+ *(.init8)
+ *(.init9)
+ .init9         0x0000009a        0x4 E:/WinAVR/bin/../lib/gcc/avr/3.4.6/../../../../avr/lib/avr5/crtm168.o
+ *(.text)
+ .text          0x0000009e        0x4 E:/WinAVR/bin/../lib/gcc/avr/3.4.6/../../../../avr/lib/avr5/crtm168.o
+                0x0000009e                __vector_22
+                0x0000009e                __vector_1
+                0x0000009e                __vector_24
+                0x0000009e                __vector_12
+                0x0000009e                __bad_interrupt
+                0x0000009e                __vector_6
+                0x0000009e                __vector_3
+                0x0000009e                __vector_23
+                0x0000009e                __vector_25
+                0x0000009e                __vector_13
+                0x0000009e                __vector_17
+                0x0000009e                __vector_19
+                0x0000009e                __vector_7
+                0x0000009e                __vector_5
+                0x0000009e                __vector_4
+                0x0000009e                __vector_9
+                0x0000009e                __vector_2
+                0x0000009e                __vector_21
+                0x0000009e                __vector_15
+                0x0000009e                __vector_8
+                0x0000009e                __vector_14
+                0x0000009e                __vector_10
+                0x0000009e                __vector_16
+                0x0000009e                __vector_20
+ .text          0x000000a2      0x8e8 drive.o
+                0x000000f2                byteTx
+                0x00000978                randomAngle
+                0x000003a0                baud
+                0x00000386                delayMs
+                0x00000102                defineSongs
+                0x00000346                __vector_11
+                0x00000482                main
+                0x00000456                powerOnRobot
+                0x00000218                drive
+                0x000000a2                initialize
+                0x000002f6                __vector_18
+                0x00000258                delayAndUpdateSensors
+ .text          0x0000098a       0xf8 E:/WinAVR/bin/../lib/gcc/avr/3.4.6/../../../../avr/lib/avr5\libc.a(random.o)
+                0x00000a5a                random
+                0x00000a4c                random_r
+                0x00000a6c                srandom
+                0x00000a82                . = ALIGN (0x2)
+ *(.text.*)
+ .text.libgcc   0x00000a82       0x3e E:/WinAVR/lib/gcc/avr/3.4.6/avr5\libgcc.a(_mulsi3.o)
+                0x00000a82                __mulsi3
+ .text.libgcc   0x00000ac0       0x44 E:/WinAVR/lib/gcc/avr/3.4.6/avr5\libgcc.a(_udivmodsi4.o)
+                0x00000ac0                __udivmodsi4
+                0x00000b04                . = ALIGN (0x2)
+ *(.fini9)
+ *(.fini8)
+ *(.fini7)
+ *(.fini6)
+ *(.fini5)
+ *(.fini4)
+ *(.fini3)
+ *(.fini2)
+ *(.fini1)
+ *(.fini0)
+                0x00000b04                _etext = .
+
+.data           0x00800100        0x4 load address 0x00000b04
+                0x00800100                PROVIDE (__data_start, .)
+ *(.data)
+ .data          0x00800100        0x4 E:/WinAVR/bin/../lib/gcc/avr/3.4.6/../../../../avr/lib/avr5\libc.a(random.o)
+ *(.gnu.linkonce.d*)
+                0x00800104                . = ALIGN (0x2)
+                0x00800104                _edata = .
+                0x00800104                PROVIDE (__data_end, .)
+
+.bss            0x00800104       0x71
+                0x00800104                PROVIDE (__bss_start, .)
+ *(.bss)
+ .bss           0x00800104        0x9 drive.o
+                0x00800109                sensors_flag
+                0x00800106                distance
+                0x00800104                angle
+                0x0080010a                timer_on
+                0x00800108                sensors_index
+                0x0080010b                timer_cnt
+ *(COMMON)
+ COMMON         0x0080010d       0x68 drive.o
+                0x0080010d                sensors_in
+                0x00800141                sensors
+                0x00800175                PROVIDE (__bss_end, .)
+                0x00000b04                __data_load_start = LOADADDR (.data)
+                0x00000b08                __data_load_end = (__data_load_start + SIZEOF (.data))
+
+.noinit         0x00800175        0x0
+                0x00800175                PROVIDE (__noinit_start, .)
+ *(.noinit*)
+                0x00800175                PROVIDE (__noinit_end, .)
+                0x00800175                _end = .
+                0x00800175                PROVIDE (__heap_start, .)
+
+.eeprom         0x00810000        0x0
+ *(.eeprom*)
+                0x00810000                __eeprom_end = .
+
+.stab           0x00000000      0x36c
+ *(.stab)
+ .stab          0x00000000      0x36c E:/WinAVR/bin/../lib/gcc/avr/3.4.6/../../../../avr/lib/avr5/crtm168.o
+
+.stabstr        0x00000000       0x84
+ *(.stabstr)
+ .stabstr       0x00000000       0x84 E:/WinAVR/bin/../lib/gcc/avr/3.4.6/../../../../avr/lib/avr5/crtm168.o
+
+.stab.excl
+ *(.stab.excl)
+
+.stab.exclstr
+ *(.stab.exclstr)
+
+.stab.index
+ *(.stab.index)
+
+.stab.indexstr
+ *(.stab.indexstr)
+
+.comment
+ *(.comment)
+
+.debug
+ *(.debug)
+
+.line
+ *(.line)
+
+.debug_srcinfo
+ *(.debug_srcinfo)
+
+.debug_sfnames
+ *(.debug_sfnames)
+
+.debug_aranges  0x00000000       0x14
+ *(.debug_aranges)
+ .debug_aranges
+                0x00000000       0x14 drive.o
+
+.debug_pubnames
+                0x00000000      0x12f
+ *(.debug_pubnames)
+ .debug_pubnames
+                0x00000000      0x12f drive.o
+
+.debug_info     0x00000000      0x39b
+ *(.debug_info)
+ .debug_info    0x00000000      0x39b drive.o
+ *(.gnu.linkonce.wi.*)
+
+.debug_abbrev   0x00000000       0xea
+ *(.debug_abbrev)
+ .debug_abbrev  0x00000000       0xea drive.o
+
+.debug_line     0x00000000      0x8e2
+ *(.debug_line)
+ .debug_line    0x00000000      0x8e2 drive.o
+
+.debug_frame
+ *(.debug_frame)
+
+.debug_str      0x00000000      0x1d9
+ *(.debug_str)
+ .debug_str     0x00000000      0x1d9 drive.o
+                                0x21b (size before relaxing)
+
+.debug_loc
+ *(.debug_loc)
+
+.debug_macinfo
+ *(.debug_macinfo)
+OUTPUT(drive.elf elf32-avr)
+
+Cross Reference Table
+
+Symbol                                            File
+__bad_interrupt                                   E:/WinAVR/bin/../lib/gcc/avr/3.4.6/../../../../avr/lib/avr5/crtm168.o
+__bss_end                                         E:/WinAVR/lib/gcc/avr/3.4.6/avr5\libgcc.a(_clear_bss.o)
+__bss_start                                       E:/WinAVR/lib/gcc/avr/3.4.6/avr5\libgcc.a(_clear_bss.o)
+__data_end                                        E:/WinAVR/lib/gcc/avr/3.4.6/avr5\libgcc.a(_copy_data.o)
+__data_load_start                                 E:/WinAVR/lib/gcc/avr/3.4.6/avr5\libgcc.a(_copy_data.o)
+__data_start                                      E:/WinAVR/lib/gcc/avr/3.4.6/avr5\libgcc.a(_copy_data.o)
+__do_clear_bss                                    E:/WinAVR/lib/gcc/avr/3.4.6/avr5\libgcc.a(_clear_bss.o)
+                                                  E:/WinAVR/bin/../lib/gcc/avr/3.4.6/../../../../avr/lib/avr5\libc.a(random.o)
+                                                  drive.o
+__do_copy_data                                    E:/WinAVR/lib/gcc/avr/3.4.6/avr5\libgcc.a(_copy_data.o)
+                                                  E:/WinAVR/bin/../lib/gcc/avr/3.4.6/../../../../avr/lib/avr5\libc.a(random.o)
+                                                  drive.o
+__heap_end                                        E:/WinAVR/bin/../lib/gcc/avr/3.4.6/../../../../avr/lib/avr5/crtm168.o
+__init                                            E:/WinAVR/bin/../lib/gcc/avr/3.4.6/../../../../avr/lib/avr5/crtm168.o
+__mulsi3                                          E:/WinAVR/lib/gcc/avr/3.4.6/avr5\libgcc.a(_mulsi3.o)
+                                                  E:/WinAVR/bin/../lib/gcc/avr/3.4.6/../../../../avr/lib/avr5\libc.a(random.o)
+__stack                                           E:/WinAVR/bin/../lib/gcc/avr/3.4.6/../../../../avr/lib/avr5/crtm168.o
+                                                  drive.o
+__udivmodsi4                                      E:/WinAVR/lib/gcc/avr/3.4.6/avr5\libgcc.a(_udivmodsi4.o)
+                                                  E:/WinAVR/bin/../lib/gcc/avr/3.4.6/../../../../avr/lib/avr5\libc.a(random.o)
+__vector_1                                        E:/WinAVR/bin/../lib/gcc/avr/3.4.6/../../../../avr/lib/avr5/crtm168.o
+__vector_10                                       E:/WinAVR/bin/../lib/gcc/avr/3.4.6/../../../../avr/lib/avr5/crtm168.o
+__vector_11                                       drive.o
+                                                  E:/WinAVR/bin/../lib/gcc/avr/3.4.6/../../../../avr/lib/avr5/crtm168.o
+__vector_12                                       E:/WinAVR/bin/../lib/gcc/avr/3.4.6/../../../../avr/lib/avr5/crtm168.o
+__vector_13                                       E:/WinAVR/bin/../lib/gcc/avr/3.4.6/../../../../avr/lib/avr5/crtm168.o
+__vector_14                                       E:/WinAVR/bin/../lib/gcc/avr/3.4.6/../../../../avr/lib/avr5/crtm168.o
+__vector_15                                       E:/WinAVR/bin/../lib/gcc/avr/3.4.6/../../../../avr/lib/avr5/crtm168.o
+__vector_16                                       E:/WinAVR/bin/../lib/gcc/avr/3.4.6/../../../../avr/lib/avr5/crtm168.o
+__vector_17                                       E:/WinAVR/bin/../lib/gcc/avr/3.4.6/../../../../avr/lib/avr5/crtm168.o
+__vector_18                                       drive.o
+                                                  E:/WinAVR/bin/../lib/gcc/avr/3.4.6/../../../../avr/lib/avr5/crtm168.o
+__vector_19                                       E:/WinAVR/bin/../lib/gcc/avr/3.4.6/../../../../avr/lib/avr5/crtm168.o
+__vector_2                                        E:/WinAVR/bin/../lib/gcc/avr/3.4.6/../../../../avr/lib/avr5/crtm168.o
+__vector_20                                       E:/WinAVR/bin/../lib/gcc/avr/3.4.6/../../../../avr/lib/avr5/crtm168.o
+__vector_21                                       E:/WinAVR/bin/../lib/gcc/avr/3.4.6/../../../../avr/lib/avr5/crtm168.o
+__vector_22                                       E:/WinAVR/bin/../lib/gcc/avr/3.4.6/../../../../avr/lib/avr5/crtm168.o
+__vector_23                                       E:/WinAVR/bin/../lib/gcc/avr/3.4.6/../../../../avr/lib/avr5/crtm168.o
+__vector_24                                       E:/WinAVR/bin/../lib/gcc/avr/3.4.6/../../../../avr/lib/avr5/crtm168.o
+__vector_25                                       E:/WinAVR/bin/../lib/gcc/avr/3.4.6/../../../../avr/lib/avr5/crtm168.o
+__vector_3                                        E:/WinAVR/bin/../lib/gcc/avr/3.4.6/../../../../avr/lib/avr5/crtm168.o
+__vector_4                                        E:/WinAVR/bin/../lib/gcc/avr/3.4.6/../../../../avr/lib/avr5/crtm168.o
+__vector_5                                        E:/WinAVR/bin/../lib/gcc/avr/3.4.6/../../../../avr/lib/avr5/crtm168.o
+__vector_6                                        E:/WinAVR/bin/../lib/gcc/avr/3.4.6/../../../../avr/lib/avr5/crtm168.o
+__vector_7                                        E:/WinAVR/bin/../lib/gcc/avr/3.4.6/../../../../avr/lib/avr5/crtm168.o
+__vector_8                                        E:/WinAVR/bin/../lib/gcc/avr/3.4.6/../../../../avr/lib/avr5/crtm168.o
+__vector_9                                        E:/WinAVR/bin/../lib/gcc/avr/3.4.6/../../../../avr/lib/avr5/crtm168.o
+__vector_default                                  E:/WinAVR/bin/../lib/gcc/avr/3.4.6/../../../../avr/lib/avr5/crtm168.o
+__vectors                                         E:/WinAVR/bin/../lib/gcc/avr/3.4.6/../../../../avr/lib/avr5/crtm168.o
+angle                                             drive.o
+baud                                              drive.o
+byteTx                                            drive.o
+defineSongs                                       drive.o
+delayAndUpdateSensors                             drive.o
+delayMs                                           drive.o
+distance                                          drive.o
+drive                                             drive.o
+initialize                                        drive.o
+main                                              drive.o
+                                                  E:/WinAVR/bin/../lib/gcc/avr/3.4.6/../../../../avr/lib/avr5/crtm168.o
+powerOnRobot                                      drive.o
+random                                            E:/WinAVR/bin/../lib/gcc/avr/3.4.6/../../../../avr/lib/avr5\libc.a(random.o)
+                                                  drive.o
+randomAngle                                       drive.o
+random_r                                          E:/WinAVR/bin/../lib/gcc/avr/3.4.6/../../../../avr/lib/avr5\libc.a(random.o)
+sensors                                           drive.o
+sensors_flag                                      drive.o
+sensors_in                                        drive.o
+sensors_index                                     drive.o
+srandom                                           E:/WinAVR/bin/../lib/gcc/avr/3.4.6/../../../../avr/lib/avr5\libc.a(random.o)
+timer_cnt                                         drive.o
+timer_on                                          drive.o
