@@ -24,6 +24,10 @@
 #define BUMP_SONG  2
 #define END_SONG   3
 
+#define RIGHT_ANGLE 81
+#define FULL_ANGLE 180
+#define GRID_RES 200		//virtual grid resolution
+enum{F,B,L,R};
 
 // Global variables
 volatile uint16_t timer_cnt = 0;
@@ -60,8 +64,13 @@ int main (void)
   uint8_t backing_up = 0;
 
   uint8_t on_track = 1;		//Uyen
-  int16_t distance_from_center = 0; //Uyen: not yet implemented
-	
+  int8_t distance_from_y = 0; //Uyen: in term of GRID_RES
+  uint8_t obsF = 0;
+  uint8_t obsR = 0;
+  uint8_t obsL = 0;
+  uint8_t obsB = 0;   
+  uint8_t orient = F;
+ 	
   // Set up Create and module
   initialize();
   LEDBothOff;
@@ -86,61 +95,61 @@ int main (void)
 
     if(++leds_cnt >= 100)
     {
-      leds_cnt = 0;
-      leds_on = !leds_on;
+		leds_cnt = 0;
+		leds_on = !leds_on;
 
-      if(leds_on)
-      {
-        byteTx(CmdLeds);
-        byteTx(LEDsBoth);
-        byteTx(128);
-        byteTx(255);
-        LEDBothOff;
-      }
-      else
-      {
-        byteTx(CmdLeds);
-        byteTx(0x00);
-        byteTx(0);
-        byteTx(0);
-        LEDBothOn;
-      }
+		if(leds_on)
+		{
+			byteTx(CmdLeds);
+			byteTx(LEDsBoth);
+			byteTx(128);
+			byteTx(255);
+			LEDBothOff;
+		}
+		else
+		{
+			byteTx(CmdLeds);
+			byteTx(0x00);
+			byteTx(0);
+			byteTx(0);
+			LEDBothOn;
+		}
     }
 
     delayAndUpdateSensors(10);
 
     if(UserButtonPressed)
     {
-      // Play start song and wait
-      byteTx(CmdPlay);
-      byteTx(START_SONG);
-      delayAndUpdateSensors(2813);
+		// Play start song and wait
+		byteTx(CmdPlay);
+		byteTx(START_SONG);
+		delayAndUpdateSensors(2813);
 
-      // Drive around until a button or unsafe condition is detected
-      while(!(UserButtonPressed)
+		// Drive around until a button or unsafe condition is detected
+		while(!(UserButtonPressed)
             && (!sensors[SenCliffL])
             && (!sensors[SenCliffFL])
             && (!sensors[SenCliffFR])
             && (!sensors[SenCliffR])
             && (!sensors[SenChAvailable])
         )
-      {
+		{
 
         // Keep turning until the specified angle is reached
         if(turning)
         {
           if(backing_up)
           {
-            if((-distance) > 5)
+            if ((-distance) > 5)
 			{
-              backing_up = 0;
-			  distance = 0;  	//Uyen
+				backing_up = 0;
+				distance = 0;  	//Uyen
 			}  
             drive(-200, RadStraight);
           }
           else
           {
-            if(turn_dir)
+            if(turn_dir)		//left turn
             {
               if(angle > turn_angle)
                 turning = 0;
@@ -154,11 +163,178 @@ int main (void)
             }
           }
         }
-		
+        else if(sensors[SenBumpDrop] & BumpEither)  // Check for a bump
+        {
+          // Set the turn parameters and reset the angle
+			/*if(sensors[SenBumpDrop] & BumpLeft)
+			{
+				turn_dir = 0;
+				if ()
+				
+			}	
+			else
+				turn_dir = 1;
+			*/
+			turn_dir=1;	//left turn
+			turn_angle=RIGHT_ANGLE;
+			if (orient == F)
+			{
+				obsF=1;
+				if (!obsL)
+					orient=L; 
+				else if (!obsR)
+				{
+					turn_dir=0;
+					orient=R;
+				}
+				else if (!obsB)
+				{
+					turn_angle=FULL_ANGLE;
+					orient=B;
+				}	
+				else 
+					break;
+			}
+			else if (orient == L)
+			{
+				obsL=1;
+				if (!obsF)
+				{
+					turn_dir=0;
+					orient=F;
+				}
+				else if (!obsR)
+				{
+					turn_angle=FULL_ANGLE;
+					orient=R;
+				}
+				else if (!obsB)
+					orient=B;
+				else 
+					break;
+			}
+			else if (orient == R)
+			{
+				obsR=1;
+				if (!obsF)
+					orient=F;
+				else if (!obsL)
+				{
+					turn_angle=FULL_ANGLE;
+					orient=L;
+				}
+				else if (!obsB)
+				{
+					turn_dir=0;
+					orient=B;
+				}
+				else
+					break;
+			}
+			else 
+			{
+				obsB=1;
+				if (!obsF) 
+				{
+					turn_angle=FULL_ANGLE;
+					orient=F;
+				}
+				else if (!obsR)
+					orient=R;
+				else if (!obsL)
+				{
+					turn_dir=0;
+					orient=L;
+				}
+				else 
+					break;
+			}
+			backing_up = 1;
+			turning = 1;
+			//if (distance > GRID_RES)
+			//	distance = distance - GRID_RES;
+			//distance = 0;
+			angle = 0;
+			//turn_angle = 90;//randomAngle();
+			on_track = 0;		//Uyen
+
+          // Play the bump song
+          byteTx(CmdPlay);
+          byteTx(BUMP_SONG);
+        }
 		//Uyen: drive forward 20mm and start turning back toward the "straight" direction
 		else if (!on_track & !turning)  
 		{
-			if (distance > 20)
+			if (distance > GRID_RES)//after moving 1 gid forward in the direction specified in sensbump else statement
+			{
+				angle = 0;
+				distance = 0;
+				turn_angle = RIGHT_ANGLE;
+				/*if (orient==F)
+				{
+					obsR=0;
+					obsL=0;
+					if (distance_from_y>0) //on the right of y-axis
+					{	
+						turn_dir=1;
+						orient=L;
+						turning=1;
+					}
+					else if (distance_from_y<0)
+					{
+						turn_dir=0;
+						orient=R;
+						turning=1;
+					}
+				}*/
+			    if (orient==L)
+				{
+					obsF=0;
+					obsB=0;
+					//distance_from_y--;
+					//if (distance_from_y<=0)   //at or moving away from center
+					//{	
+						turn_dir=0;
+						orient=F;
+						//if (distance_from_y==0)
+							on_track=1;
+						turning = 1;
+					//}
+				}
+				else if (orient==R)
+				{
+					obsF=0;
+					obsB=0;
+					//distance_from_y++;
+					//if (distance_from_y>=0)
+					//{
+						turn_dir=1;
+						orient=F;
+						//if (distance_from_y==0)
+							on_track=1;
+						turning=1;
+					//}
+				}
+				else if (orient==B)
+				{
+					if (obsL)	//if there is an obstacle on the left previously (likely to be a wall)
+					{
+						turn_dir=1;
+						orient=R;
+					}
+					else 
+					{
+						turn_dir=0;
+						orient=L;
+					}
+					obsL=0;
+					obsR=0;
+					turning=1;
+				}
+			}
+			else 
+				drive(300, RadStraight);
+			/*if (distance > 20)
 		    {
 				turn_dir = !turn_dir;	
 				on_track = 1;
@@ -169,32 +345,17 @@ int main (void)
 			}  
 			else 
 				drive(200, RadStraight);
+			*/
 		}
 		//Uyen: End
-		
-        else if(sensors[SenBumpDrop] & BumpEither)  // Check for a bump
-        {
-          // Set the turn parameters and reset the angle
-          if(sensors[SenBumpDrop] & BumpLeft)
-            turn_dir = 0;
-          else
-            turn_dir = 1;
-          backing_up = 1;
-          turning = 1;
-          distance = 0;
-          angle = 0;
-          turn_angle = 90;//randomAngle();
-		  
-		  on_track = 0;		//Uyen
-
-          // Play the bump song
-          byteTx(CmdPlay);
-          byteTx(BUMP_SONG);
-        }
         else 
         {
           // Otherwise, drive straight
           drive(300, RadStraight);
+		  obsR=0;
+		  obsL=0;
+		  if (distance > GRID_RES)	//Uyen: reset distance everytime it goes through a new grid
+			distance = 0;
         }
 
 
