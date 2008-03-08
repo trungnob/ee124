@@ -57,24 +57,7 @@ void setSerial(uint8_t com);
 uint8_t getSerialDestination(void);
 void writeChar(char c, uint8_t com);
 int main (void) 
-{
-  uint8_t leds_cnt = 99;
-  uint8_t leds_state = 0;
-  uint8_t leds_on = 1;
-
-  int16_t turn_angle = 0;
-  uint8_t turn_dir = 1;
-  uint8_t turning = 0;
-  uint8_t backing_up = 0;
-
-  uint8_t on_track = 1;		//Uyen
-  //int8_t distance_from_y = 0; //Uyen: in term of GRID_RES
-  uint8_t obsF = 0;
-  uint8_t obsR = 0;
-  uint8_t obsL = 0;
-  uint8_t obsB = 0;   
-  uint8_t orient = F;
- 	
+{ 	
   // Set up Create and module
   initialize();
   LEDBothOff;
@@ -94,127 +77,12 @@ int main (void)
   delayAndUpdateSensors(750);
 
 
-  for(;;)
+  for (;;)
   {
-
-    if(++leds_cnt >= 100)
-    {
-		leds_cnt = 0;
-		leds_on = !leds_on;
-
-		if(leds_on)
-		{
-			byteTx(CmdLeds);
-			byteTx(LEDsBoth);
-			byteTx(128);
-			byteTx(255);
-			LEDBothOff;
-		}
-		else
-		{
-			byteTx(CmdLeds);
-			byteTx(0x00);
-			byteTx(0);
-			byteTx(0);
-			LEDBothOn;
-		}
-    }
-
-    delayAndUpdateSensors(10);
-
-    if(UserButtonPressed)
-    {
-		
-	
-    }
-
-}
-
-
-
-
-
-// Serial receive interrupt to store sensor values
-}
-SIGNAL(SIG_USART_RECV)
-{
-  uint8_t temp;
-
-
-  temp = UDR0;
-
-  if(sensors_flag)
-  {
-    sensors_in[sensors_index++] = temp;
-    if(sensors_index >= Sen6Size)
-      sensors_flag = 0;
+  writeChar('d',USB);
+  delayMs(10);
   }
-}
-
-
-
-
-// Timer 1 interrupt to time delays in ms
-SIGNAL(SIG_OUTPUT_COMPARE1A)
-{
-  if(timer_cnt)
-    timer_cnt--;
-  else
-    timer_on = 0;
-}
-
-
-
-
-// Transmit a byte over the serial port
-void byteTx(uint8_t value)
-{
-  while(!(UCSR0A & _BV(UDRE0))) ;
-  UDR0 = value;
-}
-
-
-
-
-// Delay for the specified time in ms without updating sensor values
-void delayMs(uint16_t time_ms)
-{
-  timer_on = 1;
-  timer_cnt = time_ms;
-  while(timer_on) ;
-}
-
-int  ReadX()
-{
- ADSCRA = 
- 
-}
-
-
-// Delay for the specified time in ms and update sensor values
-void delayAndUpdateSensors(uint16_t time_ms)
-{
-  uint8_t temp;
-
-  timer_on = 1;
-  timer_cnt = time_ms;
-  while(timer_on)
-  {
-    if(!sensors_flag)
-    {
-      for(temp = 0; temp < Sen6Size; temp++)
-        sensors[temp] = sensors_in[temp];
-
-      // Update running totals of distance and angle
-      distance += (int)((sensors[SenDist1] << 8) | sensors[SenDist0]);
-      angle += (int)((sensors[SenAng1] << 8) | sensors[SenAng0]);
-
-      byteTx(CmdSensors);
-      byteTx(6);
-      sensors_index = 0;
-      sensors_flag = 1;
-    }
-  }
+  
 }
 
 
@@ -243,11 +111,7 @@ void initialize(void)
   UBRR0 = 19;
   UCSR0B = (_BV(RXCIE0) | _BV(TXEN0) | _BV(RXEN0));
   UCSR0C = (_BV(UCSZ00) | _BV(UCSZ01));
-  // Setup ADC 
-  // DIDR0 |= 0x20;  // disable digital input on C5
-  PRR &= ~_BV(PRADC); // Turn off ADC power save
-  ADCSRA = (_BV(ADEN) | _BV(ADPS2) | _BV(ADPS1) | _BV(ADPS0)); // Enabled, prescaler = 128
-  ADMUX = (_BV(REFS0) ); // set voltage reference, select channel C5
+
   // Turn on interrupts
   sei();
 }
@@ -402,3 +266,31 @@ void defineSongs(void)
   byteTx(24);
 }
 
+
+
+
+
+void setSerial(uint8_t com) {
+if(com == USB)
+PORTB |= 0x10;
+else if(com == CR8)
+PORTB &= ~0x10;
+}
+uint8_t getSerialDestination(void) {
+if (PORTB & 0x10)
+return USB;
+else
+return CR8;
+}
+void writeChar(char c, uint8_t com) {
+uint8_t originalDestination = getSerialDestination();
+if (com != originalDestination) {
+setSerial(com);
+delayMs(1);
+}
+byteTx((uint8_t)(c));
+if (com != originalDestination) {
+setSerial(originalDestination);
+delayMs(1);
+}
+}

@@ -11,7 +11,8 @@ drive.o: drive.c c:/winavr-20071221rc1/bin/../avr/include/avr/interrupt.h \
   c:/winavr-20071221rc1/bin/../avr/include/avr/fuse.h \
   c:/winavr-20071221rc1/bin/../avr/include/avr/lock.h \
   c:/winavr-20071221rc1/bin/../avr/include/stdlib.h \
-  c:\winavr-20071221rc1\bin\../lib/gcc/avr/4.2.2/include/stddef.h oi.h
+  c:\winavr-20071221rc1\bin\../lib/gcc/avr/4.2.2/include/stddef.h oi.h \
+  adc.h
 
 c:/winavr-20071221rc1/bin/../avr/include/avr/interrupt.h:
 
@@ -42,3 +43,5 @@ c:/winavr-20071221rc1/bin/../avr/include/stdlib.h:
 c:\winavr-20071221rc1\bin\../lib/gcc/avr/4.2.2/include/stddef.h:
 
 oi.h:
+
+adc.h:

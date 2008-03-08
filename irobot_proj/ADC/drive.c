@@ -16,7 +16,7 @@
 #include <avr/io.h>
 #include <stdlib.h>
 #include "oi.h"
-
+#include "adc.h"
 #define USB 1
 #define CR8 2
 
@@ -40,7 +40,7 @@ volatile uint8_t sensors_in[Sen6Size];
 volatile uint8_t sensors[Sen6Size];
 volatile int16_t distance = 0;
 volatile int16_t angle = 0;
-
+volatile int16_t X=0;
 
 
 // Functions
@@ -56,86 +56,66 @@ void defineSongs(void);
 void setSerial(uint8_t com);
 uint8_t getSerialDestination(void);
 void writeChar(char c, uint8_t com);
+void ReadX(void);
+int16_t ReadY(void);
 int main (void) 
 {
-  uint8_t leds_cnt = 99;
+
+uint8_t leds_cnt = 99;
   uint8_t leds_state = 0;
   uint8_t leds_on = 1;
-
-  int16_t turn_angle = 0;
-  uint8_t turn_dir = 1;
-  uint8_t turning = 0;
-  uint8_t backing_up = 0;
-
-  uint8_t on_track = 1;		//Uyen
-  //int8_t distance_from_y = 0; //Uyen: in term of GRID_RES
-  uint8_t obsF = 0;
-  uint8_t obsR = 0;
-  uint8_t obsL = 0;
-  uint8_t obsB = 0;   
-  uint8_t orient = F;
- 	
+ 
+ 
+ 
   // Set up Create and module
   initialize();
   LEDBothOff;
-  powerOnRobot();
-  byteTx(CmdStart);
-  baud(Baud28800);
-  defineSongs();
-  byteTx(CmdControl);
-  byteTx(CmdFull);
-
+ // powerOnRobot();
+ // byteTx(CmdStart);
+  //baud(Baud28800);
+ // defineSongs();
+  
+// LED1On;
+ // byteTx(CmdControl);
+  //byteTx(CmdFull);
+ // X=ReadX();
   // Stop just as a precaution
-  drive(0, RadStraight);
+  //drive(0, RadStraight);
 
   // Play the reset song and wait while it plays
-  byteTx(CmdPlay);
-  byteTx(RESET_SONG);
-  delayAndUpdateSensors(750);
-
+  //byteTx(CmdPlay);
+  //byteTx(RESET_SONG);
+  //delayAndUpdateSensors(750);
+   
+   
 
   for(;;)
   {
-
-    if(++leds_cnt >= 100)
-    {
-		leds_cnt = 0;
-		leds_on = !leds_on;
-
-		if(leds_on)
-		{
-			byteTx(CmdLeds);
-			byteTx(LEDsBoth);
-			byteTx(128);
-			byteTx(255);
-			LEDBothOff;
-		}
-		else
-		{
-			byteTx(CmdLeds);
-			byteTx(0x00);
-			byteTx(0);
-			byteTx(0);
-			LEDBothOn;
-		}
-    }
-
-    delayAndUpdateSensors(10);
-
-    if(UserButtonPressed)
-    {
-		
+  LEDBothOff;
+   delayMs(1000);
+   ReadX();
+   if (X >500)
+   {
+   LED1On;
+   LED2Off;
+   }
+   else if (X<600) 
+   {
+    LED1Off;
+	LED2On;
+   }
+ 
+   else 
+   {
+   LEDBothOn;
+   }
 	
-    }
+	delayMs(1000);
+  } 
 
 }
-
-
-
-
-
 // Serial receive interrupt to store sensor values
-}
+
 SIGNAL(SIG_USART_RECV)
 {
   uint8_t temp;
@@ -184,10 +164,20 @@ void delayMs(uint16_t time_ms)
   while(timer_on) ;
 }
 
-int  ReadX()
+void  ReadX(void)
 {
- ADSCRA = 
- 
+  
+  
+  while (ADCSRA & my_ADSC)  {
+  } // ADC is still busy wait
+   ADCSRA |= 0x40;
+  while (ADCSRA  & my_ADSC) 
+  {
+  } //busy converting ...
+  X=ADC;
+
+  
+  
 }
 
 
@@ -245,9 +235,10 @@ void initialize(void)
   UCSR0C = (_BV(UCSZ00) | _BV(UCSZ01));
   // Setup ADC 
   // DIDR0 |= 0x20;  // disable digital input on C5
-  PRR &= ~_BV(PRADC); // Turn off ADC power save
-  ADCSRA = (_BV(ADEN) | _BV(ADPS2) | _BV(ADPS1) | _BV(ADPS0)); // Enabled, prescaler = 128
-  ADMUX = (_BV(REFS0) ); // set voltage reference, select channel C5
+  PRR &= ~_BV(PRADC); // Turn off  power save
+  ADCSRA |= (_BV(ADEN) | _BV(ADPS2) | _BV(ADPS1) | _BV(ADPS0)); // Enabled, prescaler = 128
+// |=my_ADLAR;
+  ADMUX |= (0x40 | 0x06); // set voltage reference, select channel C5
   // Turn on interrupts
   sei();
 }
