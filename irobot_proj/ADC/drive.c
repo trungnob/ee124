@@ -41,7 +41,7 @@ volatile uint8_t sensors[Sen6Size];
 volatile int16_t distance = 0;
 volatile int16_t angle = 0;
 volatile int16_t X=0;
-
+volatile int16_t Y=0;
 
 // Functions
 void byteTx(uint8_t value);
@@ -70,31 +70,72 @@ uint8_t leds_cnt = 99;
   // Set up Create and module
   initialize();
   LEDBothOff;
- // powerOnRobot();
- // byteTx(CmdStart);
-  //baud(Baud28800);
- // defineSongs();
+  powerOnRobot();
+  byteTx(CmdStart);
+  baud(Baud57600);
+  defineSongs();
   
 // LED1On;
- // byteTx(CmdControl);
-  //byteTx(CmdFull);
+  byteTx(CmdControl);
+  byteTx(CmdFull);
  // X=ReadX();
   // Stop just as a precaution
-  //drive(0, RadStraight);
+  drive(0, RadStraight);
 
   // Play the reset song and wait while it plays
-  //byteTx(CmdPlay);
-  //byteTx(RESET_SONG);
-  //delayAndUpdateSensors(750);
+  byteTx(CmdPlay);
+  byteTx(RESET_SONG);
+  delayAndUpdateSensors(750);
    
-   
+  // Turn on all the leds
+    byteTx(CmdLeds);
+    byteTx(LEDsBoth);
+    // Make Create's power LED orange
+    byteTx(128);
+    byteTx(255);
+ 
 
   for(;;)
   {
   LEDBothOff;
    delayMs(1000);
    ReadX();
-   if (X >500)
+   
+   byteTx(CmdSong);
+   byteTx(4); 
+   byteTx(1);
+   byteTx(X>>3);
+   byteTx(64);
+   byteTx(CmdPlay);
+   byteTx(4);
+   delayMs(1500);
+   byteTx(CmdSong);
+   byteTx(6);
+   byteTx(1);
+   byteTx(64);
+   byteTx(64);
+   byteTx(CmdPlay);
+   byteTx(6);
+   delayMs(1500);
+  // LED1Off;
+   //LED2On;
+   
+   if (((abs(X - Y)) >> 2) == 0) 
+   {
+	byteTx(CmdSong);
+	byteTx(5);
+	byteTx(2);
+	byteTx(X>>3);
+	byteTx(64);
+	byteTx(X>>3);
+	byteTx(16);
+	byteTx(CmdPlay);
+	byteTx(5);
+	delayMs(2000);
+	LED1On;
+	LED2Off;
+   }
+   /*else if  (X >500)
    {
    LED1On;
    LED2Off;
@@ -108,7 +149,7 @@ uint8_t leds_cnt = 99;
    else 
    {
    LEDBothOn;
-   }
+   }*/
 	
 	delayMs(1000);
   } 
@@ -167,16 +208,19 @@ void delayMs(uint16_t time_ms)
 void  ReadX(void)
 {
   
-  
-  while (ADCSRA & my_ADSC)  {
-  } // ADC is still busy wait
-   ADCSRA |= 0x40;
-  while (ADCSRA  & my_ADSC) 
-  {
-  } //busy converting ...
+  ADMUX |= 0x06; // set voltage reference, select channel C6
+ // while (ADCSRA & my_ADSC)  {
+  //} // ADC is still busy wait
+  ADCSRA |= 0x40;
+  while (ADCSRA  & my_ADSC);  //busy converting ...
   X=ADC;
-
+  LED1On;
+  LED2On;
   
+  ADMUX |= 0x07; // set voltage reference, select channel C7
+  ADCSRA |= 0x40;
+  while (ADCSRA & my_ADSC);
+  Y = ADC;
   
 }
 
@@ -238,7 +282,7 @@ void initialize(void)
   PRR &= ~_BV(PRADC); // Turn off  power save
   ADCSRA |= (_BV(ADEN) | _BV(ADPS2) | _BV(ADPS1) | _BV(ADPS0)); // Enabled, prescaler = 128
 // |=my_ADLAR;
-  ADMUX |= (0x40 | 0x06); // set voltage reference, select channel C5
+  ADMUX |= (0x40 ); // set voltage reference
   // Turn on interrupts
   sei();
 }
