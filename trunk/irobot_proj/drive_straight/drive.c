@@ -23,12 +23,16 @@
 #define START_SONG 1
 #define BUMP_SONG  2
 #define END_SONG   3
+#define Grid_Res 100
 
+<<<<<<< .mine
+=======
 #define RIGHT_ANGLE 81
 #define FULL_ANGLE 180
 #define GRID_RES 200		//virtual grid resolution
 enum{F,B,L,R};
 
+>>>>>>> .r14
 // Global variables
 volatile uint16_t timer_cnt = 0;
 volatile uint8_t timer_on = 0;
@@ -37,8 +41,9 @@ volatile uint8_t sensors_index = 0;
 volatile uint8_t sensors_in[Sen6Size];
 volatile uint8_t sensors[Sen6Size];
 volatile int16_t distance = 0;
+volatile int16_t abs_distance=0;
 volatile int16_t angle = 0;
-
+enum{F,B,L,R};
 
 
 // Functions
@@ -63,6 +68,18 @@ int main (void)
   uint8_t turning = 0;
   uint8_t backing_up = 0;
 
+<<<<<<< .mine
+  uint8_t on_track = 1;		
+  int16_t distance_from_X = 1; 
+  int16_t distance_from_Y=0;
+  uint8_t obF=0;
+  uint8_t obB=0;
+  uint8_t obL=0;
+  uint8_t obR=0;
+  uint8_t orient=F; 
+  
+	
+=======
   uint8_t on_track = 1;		//Uyen
   int8_t distance_from_y = 0; //Uyen: in term of GRID_RES
   uint8_t obsF = 0;
@@ -71,6 +88,7 @@ int main (void)
   uint8_t obsB = 0;   
   uint8_t orient = F;
  	
+>>>>>>> .r14
   // Set up Create and module
   initialize();
   LEDBothOff;
@@ -134,21 +152,70 @@ int main (void)
             && (!sensors[SenChAvailable])
         )
 		{
+/*if (obF==1 && orient ==F)
+			{
+				turning=1;
+				turn_dir=1;
+				turn_angle=90;
+				backing_up=0;
+				orient=L;
+			}
+else if (obL==1  && orient ==L)
+			{
+				turning =1;
+				turn_dir =0;
+				turn_angle=180;
+				backing_up=0;
+				orient=R;
+			}
+else if (obR==1 && orient == R)
+			{
+				turning =1;
+				turn_dir=0;
+				turn_angle=90;
+				backing_up=0;
+				orient = B;
+			}
+else if (obB==1 && orient == B)
+			{
+			 drive(0, RadStraight);
+			}
 
-        // Keep turning until the specified angle is reached
-        if(turning)
+     // Keep turning until the specified angle is reached
+else   */ if(turning)
         {
+<<<<<<< .mine
+			if(backing_up)
+=======
           if(backing_up)
           {
             if ((-distance) > 5)
+>>>>>>> .r14
 			{
+<<<<<<< .mine
+            if((-distance) > Grid_Res)
+			{
+              backing_up = 0;
+			  distance = 0;  	//Uyen
+=======
 				backing_up = 0;
 				distance = 0;  	//Uyen
+>>>>>>> .r14
 			}  
             drive(-200, RadStraight);
+			if (orient==F) 
+			distance_from_X--;
+			else if (orient==B)
+			distance_from_X++;
+			else if (orient==L)
+			distance_from_Y++;
+			else if (orient==R)
+			distance_from_Y--;
+			}
+			
           }
-          else
-          {
+			else if ((obL==0)||(obR==0)||(obF==0)||(obB==0))
+			{
             if(turn_dir)		//left turn
             {
               if(angle > turn_angle)
@@ -162,6 +229,8 @@ int main (void)
               drive(200, RadCW);
             }
           }
+<<<<<<< .mine
+=======
         }
         else if(sensors[SenBumpDrop] & BumpEither)  // Check for a bump
         {
@@ -343,23 +412,320 @@ int main (void)
 				turning = 1;
 				turn_angle = 90;
 			}  
+>>>>>>> .r14
 			else 
-				drive(200, RadStraight);
+			{
+				drive(0,RadStraight);
+			}
+			angle=0;
 			*/
 		}
-		//Uyen: End
-        else 
+<<<<<<< .mine
+		
+		//Uyen: drive forward 20mm and start turning back toward the "straight" direction
+		
+        else if((sensors[SenBumpDrop] & BumpEither))  // Check for a bump or obstacle
+        {
+			on_track=0;
+          distance=0;
+          backing_up = 1;
+		  angle=0;
+          turning = 1;
+		    if (orient==F ) 
+		  {
+			obF=1;
+			turn_angle=90;
+			turn_dir=1;
+			orient=L;
+		  }
+		  else if (orient==L )
+		  {
+			obL=1;
+		   turn_angle=180;
+		   turn_dir=1;
+		   orient=R;
+		  }
+		  else if (orient ==R )
+		  {
+			obR=1;
+			turn_angle=90;
+			turn_dir=0;
+			orient=B;
+		  }
+		  else 
+		  {
+			
+			obB=1;
+		  }
+
+        		
+          // Play the bump song
+          byteTx(CmdPlay);
+          byteTx(BUMP_SONG);
+        }
+=======
+>>>>>>> .r14
+       /* else if ((obF==0 && orient==F)|| (obL==0 &&  orient ==L) || (obR==0 && orient==R) ||(obB==0 && orient==B))
         {
           // Otherwise, drive straight
           drive(300, RadStraight);
+<<<<<<< .mine
+		 if (distance>=Grid_Res) //move to next square 
+		 {
+		  distance=0;
+		  angle =0;
+		if (orient==F)
+		{
+			obB=1;
+			obL=0;
+			obR=0;
+			obF=0;
+			if (distance_from_Y > 0)
+			{	
+				turning=1;
+				turn_dir=1;
+				turn_angle=90;
+				orient=L;
+			}
+			else if (distance_from_Y<0) 
+			{ 
+				turning =1;
+				turn_dir=0;
+				turn_angle=90;
+				orient=R;
+			}
+			else 
+			{
+			turning =0;
+			distance_from_X++;
+			}
+			
+		}	
+		else if  (orient == L)
+			{
+				obR=1;
+				//reset orientation to FRONT
+				turning=1;
+				turn_dir=0;
+				turn_angle=90;
+				orient=F;
+			}
+		else if (orient == R)
+			{
+				obL=1;
+				obR=0;
+				obB=0;
+				obF=0;
+				turning=1;
+				turn_dir=1;
+				turn_angle=90;
+				orient=F;
+			}
+		else if (orient == B)
+			{
+				obF=1;
+				obL=0;
+				obR=0;
+				turning=1;
+				turn_dir=1;
+				turn_angle=180;
+				orient=F;
+			}
+		 
+			
+		 }*/
+		 
+		  
+		  
+		  if (distance>=Grid_Res) //Move to next  Square
+		    {
+			    angle=0;
+				
+				distance=0; //Reset distance (set origin to new square)
+				backing_up=0;
+				if (obF==0)
+				{
+				 on_track=1;
+				 
+				 distance_from_X++;
+				}
+				else if ((obF==1) && (obL==1) && (obR==1)) //Reset the "wall" around  
+					{
+						obF=1;
+						obL=0;
+						obR=0;
+						
+					}
+				else if ((obF==1)&& (obL==1) &&(obR==0))
+						{
+							obF=0;
+							obL=1;
+							obR=0;
+							
+						}
+				else if ((obF==1) &&(obL==0))
+						{
+							obF=0;
+							obL=0;
+							distance_from_Y--;
+						}
+				
+				if (distance_from_X >=0)
+				{
+					if(distance_from_Y==0)
+					{
+						{
+							if (orient==F)
+							{
+								orient=F;
+								turning=0;
+								
+							}
+							else if (orient == R)
+							{
+							   orient=F;
+							   turning=1;
+							   turn_dir=1;
+							   turn_angle=90;
+							}
+							else if (orient == L)
+							{
+								orient=F;
+								turning=1;
+								turn_dir=0;
+								turn_angle=90;
+							}
+						}
+					}
+					else if(distance_from_Y>0)
+					{
+						{
+							if (orient==F)
+							{
+								orient=L;
+								turning=1;
+								turn_dir=1;
+								turn_angle=90;
+								distance_from_Y--;
+							}
+							else if (orient == R)
+							{
+							   orient=F;
+							   turning=1;
+							   turn_dir=1;
+							   turn_angle=90;
+							}
+							else if (orient == L)
+							{
+								orient=L;
+								turning=0;
+								distance_from_Y--;
+							}
+						}
+					}
+					else if (distance_from_Y <0)
+							{
+								if (orient==F)
+								{
+								orient = R;
+								turning=1;
+								turn_dir=0;
+								turn_angle=90;
+								distance_from_Y++;
+								}
+								
+								else if (orient==R)
+								{
+								orient =R;
+								turning=0;
+								distance_from_Y++;
+								}
+								else if (orient == L)
+								{
+								orient = F;
+								turning =1;
+								turn_dir=0;
+								turn_angle=90;
+								}
+							}
+                
+				}
+				
+				
+				
+				else 
+					{
+					if(distance_from_Y==0)
+					{
+						{
+							if (orient==B)
+							{
+								orient=R;
+								turning=1;
+								turn_dir=1;
+								turn_angle=90;
+							}
+							else if (orient == F)
+							{
+							   orient=F;
+							   turning=0;
+							}
+							else if (orient == R)
+							{
+								orient=F;
+								turning=1;
+								turn_dir=1;
+								turn_angle=90;
+							}
+							else if (orient == L)
+							{
+								orient =F;
+								turning=1;
+								turn_dir=0;
+								turn_angle=90;
+							}
+						}
+					}
+					else if (distance_from_Y <0)
+							{
+								if (orient==F)
+								{
+								orient =R;
+								turning=1;
+								turn_dir=0;
+								turn_angle=90;
+								}
+								
+								else if (orient==R)
+								{
+								orient = R;
+								turning=0;
+								}
+								else if (orient == L)
+								{
+								orient = F;
+								turning =1;
+								turn_dir=0;
+								turn_angle=90;
+								}
+							}
+						
+					}
+			}
+		
+        
+		
+		}
+=======
 		  obsR=0;
 		  obsL=0;
 		  if (distance > GRID_RES)	//Uyen: reset distance everytime it goes through a new grid
 			distance = 0;
         }
+>>>>>>> .r14
 
 
-        // Flash the leds in sequence
+		// Flash the leds in sequence
         if(++leds_cnt >= 10)
         {
           leds_cnt = 0;
@@ -443,6 +809,7 @@ int main (void)
 
     }
   }
+
 }
 
 
@@ -516,6 +883,7 @@ void delayAndUpdateSensors(uint16_t time_ms)
 
       // Update running totals of distance and angle
       distance += (int)((sensors[SenDist1] << 8) | sensors[SenDist0]);
+	 abs_distance+= (int)((sensors[SenDist1] << 8) | sensors[SenDist0]);
       angle += (int)((sensors[SenAng1] << 8) | sensors[SenAng0]);
 
       byteTx(CmdSensors);

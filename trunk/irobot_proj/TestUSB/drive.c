@@ -96,46 +96,22 @@ int main (void)
 
   for(;;)
   {
-
-    if(++leds_cnt >= 100)
-    {
-		leds_cnt = 0;
-		leds_on = !leds_on;
-
-		if(leds_on)
-		{
-			byteTx(CmdLeds);
-			byteTx(LEDsBoth);
-			byteTx(128);
-			byteTx(255);
-			LEDBothOff;
-		}
-		else
-		{
-			byteTx(CmdLeds);
-			byteTx(0x00);
-			byteTx(0);
-			byteTx(0);
-			LEDBothOn;
-		}
-    }
-
-    delayAndUpdateSensors(10);
-
-    if(UserButtonPressed)
-    {
-		
-	
-    }
-
+  if (UserButtonPressed)
+  {
+  byteTx(CmdPlay);
+  byteTx(START_SONG);
+  delayMs(2000);
+  }
+     writeChar('d',USB);
+	 delayMs(300);
+  
+  }
 }
-
 
 
 
 
 // Serial receive interrupt to store sensor values
-}
 SIGNAL(SIG_USART_RECV)
 {
   uint8_t temp;
@@ -184,11 +160,7 @@ void delayMs(uint16_t time_ms)
   while(timer_on) ;
 }
 
-int  ReadX()
-{
- ADSCRA = 
- 
-}
+
 
 
 // Delay for the specified time in ms and update sensor values
@@ -243,11 +215,7 @@ void initialize(void)
   UBRR0 = 19;
   UCSR0B = (_BV(RXCIE0) | _BV(TXEN0) | _BV(RXEN0));
   UCSR0C = (_BV(UCSZ00) | _BV(UCSZ01));
-  // Setup ADC 
-  // DIDR0 |= 0x20;  // disable digital input on C5
-  PRR &= ~_BV(PRADC); // Turn off ADC power save
-  ADCSRA = (_BV(ADEN) | _BV(ADPS2) | _BV(ADPS1) | _BV(ADPS0)); // Enabled, prescaler = 128
-  ADMUX = (_BV(REFS0) ); // set voltage reference, select channel C5
+
   // Turn on interrupts
   sei();
 }
@@ -402,3 +370,31 @@ void defineSongs(void)
   byteTx(24);
 }
 
+
+
+
+
+void setSerial(uint8_t com) {
+if(com == USB)
+PORTB |= 0x10;
+else if(com == CR8)
+PORTB &= ~0x10;
+}
+uint8_t getSerialDestination(void) {
+if (PORTB & 0x10)
+return USB;
+else
+return CR8;
+}
+void writeChar(char c, uint8_t com) {
+uint8_t originalDestination = getSerialDestination();
+if (com != originalDestination) {
+setSerial(com);
+delayMs(200);
+}
+byteTx((uint8_t)(c));
+if (com != originalDestination) {
+setSerial(originalDestination);
+delayMs(200);
+}
+}

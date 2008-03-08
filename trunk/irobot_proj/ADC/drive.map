@@ -136,11 +136,7 @@ LOAD c:/winavr-20071221rc1/bin/../lib/gcc/avr/4.2.2/avr5\libgcc.a
 .rela.plt
  *(.rela.plt)
 
-<<<<<<< .mine
-.text           0x00000000      0xe60
-=======
-.text           0x00000000      0xa0c
->>>>>>> .r14
+.text           0x00000000      0x942
  *(.vectors)
  .vectors       0x00000000       0x68 c:/winavr-20071221rc1/bin/../lib/gcc/avr/4.2.2/../../../../avr/lib/avr5/crtm168.o
                 0x00000000                __vectors
@@ -195,7 +191,6 @@ LOAD c:/winavr-20071221rc1/bin/../lib/gcc/avr/4.2.2/avr5\libgcc.a
  .init9         0x0000009a        0x8 c:/winavr-20071221rc1/bin/../lib/gcc/avr/4.2.2/../../../../avr/lib/avr5/crtm168.o
  *(.init9)
  *(.text)
-<<<<<<< .mine
  .text          0x000000a2        0x4 c:/winavr-20071221rc1/bin/../lib/gcc/avr/4.2.2/../../../../avr/lib/avr5/crtm168.o
                 0x000000a2                __vector_22
                 0x000000a2                __vector_1
@@ -221,104 +216,52 @@ LOAD c:/winavr-20071221rc1/bin/../lib/gcc/avr/4.2.2/avr5\libgcc.a
                 0x000000a2                __vector_10
                 0x000000a2                __vector_16
                 0x000000a2                __vector_20
- .text          0x000000a6      0xbb8 drive.o
+ .text          0x000000a6      0x69a drive.o
                 0x00000136                byteTx
-                0x00000694                randomAngle
-                0x000002f0                baud
+                0x000001f8                randomAngle
+                0x00000612                baud
                 0x00000146                delayMs
-                0x00000410                defineSongs
+                0x0000020a                defineSongs
                 0x000000f6                __vector_11
-                0x000006a6                main
-                0x00000290                powerOnRobot
-                0x000003be                drive
-                0x00000240                initialize
+                0x0000059a                main
+                0x000006e0                powerOnRobot
+                0x0000048e                drive
+                0x0000018a                initialize
+                0x0000015e                ReadX
                 0x000000a6                __vector_18
-                0x0000015e                delayAndUpdateSensors
- .text          0x00000c5e        0x0 c:/winavr-20071221rc1/bin/../lib/gcc/avr/4.2.2/avr5\libgcc.a(_exit.o)
- .text          0x00000c5e        0x0 c:/winavr-20071221rc1/bin/../lib/gcc/avr/4.2.2/avr5\libgcc.a(_copy_data.o)
- .text          0x00000c5e        0x0 c:/winavr-20071221rc1/bin/../lib/gcc/avr/4.2.2/avr5\libgcc.a(_clear_bss.o)
- .text          0x00000c5e       0xda c:/winavr-20071221rc1/bin/../lib/gcc/avr/4.2.2/../../../../avr/lib/avr5\libc.a(random.o)
-                0x00000d1c                random
-                0x00000d16                random_r
-                0x00000d26                srandom
- .text          0x00000d38        0x0 c:/winavr-20071221rc1/bin/../lib/gcc/avr/4.2.2/avr5\libgcc.a(_mulsi3.o)
- .text          0x00000d38        0x0 c:/winavr-20071221rc1/bin/../lib/gcc/avr/4.2.2/avr5\libgcc.a(_divmodsi4.o)
- .text          0x00000d38        0x0 c:/winavr-20071221rc1/bin/../lib/gcc/avr/4.2.2/avr5\libgcc.a(_prologue.o)
- .text          0x00000d38        0x0 c:/winavr-20071221rc1/bin/../lib/gcc/avr/4.2.2/avr5\libgcc.a(_epilogue.o)
- .text          0x00000d38        0x0 c:/winavr-20071221rc1/bin/../lib/gcc/avr/4.2.2/avr5\libgcc.a(_udivmodsi4.o)
-                0x00000d38                . = ALIGN (0x2)
-=======
- .text          0x0000009e        0x4 E:/WinAVR/bin/../lib/gcc/avr/3.4.6/../../../../avr/lib/avr5/crtm168.o
-                0x0000009e                __vector_22
-                0x0000009e                __vector_1
-                0x0000009e                __vector_24
-                0x0000009e                __vector_12
-                0x0000009e                __bad_interrupt
-                0x0000009e                __vector_6
-                0x0000009e                __vector_3
-                0x0000009e                __vector_23
-                0x0000009e                __vector_25
-                0x0000009e                __vector_13
-                0x0000009e                __vector_17
-                0x0000009e                __vector_19
-                0x0000009e                __vector_7
-                0x0000009e                __vector_5
-                0x0000009e                __vector_4
-                0x0000009e                __vector_9
-                0x0000009e                __vector_2
-                0x0000009e                __vector_21
-                0x0000009e                __vector_15
-                0x0000009e                __vector_8
-                0x0000009e                __vector_14
-                0x0000009e                __vector_10
-                0x0000009e                __vector_16
-                0x0000009e                __vector_20
- .text          0x000000a2      0x7f0 drive.o
-                0x000000f2                byteTx
-                0x00000880                randomAngle
-                0x000003a0                baud
-                0x00000386                delayMs
-                0x00000102                defineSongs
-                0x00000346                __vector_11
-                0x00000482                main
-                0x00000456                powerOnRobot
-                0x00000218                drive
-                0x000000a2                initialize
-                0x000002f6                __vector_18
-                0x00000258                delayAndUpdateSensors
- .text          0x00000892       0xf8 E:/WinAVR/bin/../lib/gcc/avr/3.4.6/../../../../avr/lib/avr5\libc.a(random.o)
-                0x00000962                random
-                0x00000954                random_r
-                0x00000974                srandom
-                0x0000098a                . = ALIGN (0x2)
->>>>>>> .r14
+                0x000004e0                delayAndUpdateSensors
+ .text          0x00000740        0x0 c:/winavr-20071221rc1/bin/../lib/gcc/avr/4.2.2/avr5\libgcc.a(_exit.o)
+ .text          0x00000740        0x0 c:/winavr-20071221rc1/bin/../lib/gcc/avr/4.2.2/avr5\libgcc.a(_copy_data.o)
+ .text          0x00000740        0x0 c:/winavr-20071221rc1/bin/../lib/gcc/avr/4.2.2/avr5\libgcc.a(_clear_bss.o)
+ .text          0x00000740       0xda c:/winavr-20071221rc1/bin/../lib/gcc/avr/4.2.2/../../../../avr/lib/avr5\libc.a(random.o)
+                0x000007fe                random
+                0x000007f8                random_r
+                0x00000808                srandom
+ .text          0x0000081a        0x0 c:/winavr-20071221rc1/bin/../lib/gcc/avr/4.2.2/avr5\libgcc.a(_mulsi3.o)
+ .text          0x0000081a        0x0 c:/winavr-20071221rc1/bin/../lib/gcc/avr/4.2.2/avr5\libgcc.a(_divmodsi4.o)
+ .text          0x0000081a        0x0 c:/winavr-20071221rc1/bin/../lib/gcc/avr/4.2.2/avr5\libgcc.a(_prologue.o)
+ .text          0x0000081a        0x0 c:/winavr-20071221rc1/bin/../lib/gcc/avr/4.2.2/avr5\libgcc.a(_epilogue.o)
+ .text          0x0000081a        0x0 c:/winavr-20071221rc1/bin/../lib/gcc/avr/4.2.2/avr5\libgcc.a(_udivmodsi4.o)
+                0x0000081a                . = ALIGN (0x2)
  *(.text.*)
-<<<<<<< .mine
- .text.libgcc   0x00000d38        0x0 c:/winavr-20071221rc1/bin/../lib/gcc/avr/4.2.2/avr5\libgcc.a(_exit.o)
- .text.libgcc   0x00000d38        0x0 c:/winavr-20071221rc1/bin/../lib/gcc/avr/4.2.2/avr5\libgcc.a(_copy_data.o)
- .text.libgcc   0x00000d38        0x0 c:/winavr-20071221rc1/bin/../lib/gcc/avr/4.2.2/avr5\libgcc.a(_clear_bss.o)
- .text.libgcc   0x00000d38       0x3e c:/winavr-20071221rc1/bin/../lib/gcc/avr/4.2.2/avr5\libgcc.a(_mulsi3.o)
-                0x00000d38                __mulsi3
- .text.libgcc   0x00000d76       0x36 c:/winavr-20071221rc1/bin/../lib/gcc/avr/4.2.2/avr5\libgcc.a(_divmodsi4.o)
-                0x00000d76                __divmodsi4
- .text.libgcc   0x00000dac       0x38 c:/winavr-20071221rc1/bin/../lib/gcc/avr/4.2.2/avr5\libgcc.a(_prologue.o)
-                0x00000dac                __prologue_saves__
- .text.libgcc   0x00000de4       0x36 c:/winavr-20071221rc1/bin/../lib/gcc/avr/4.2.2/avr5\libgcc.a(_epilogue.o)
-                0x00000de4                __epilogue_restores__
- .text.libgcc   0x00000e1a       0x44 c:/winavr-20071221rc1/bin/../lib/gcc/avr/4.2.2/avr5\libgcc.a(_udivmodsi4.o)
-                0x00000e1a                __udivmodsi4
-                0x00000e5e                . = ALIGN (0x2)
-=======
- .text.libgcc   0x0000098a       0x3e E:/WinAVR/lib/gcc/avr/3.4.6/avr5\libgcc.a(_mulsi3.o)
-                0x0000098a                __mulsi3
- .text.libgcc   0x000009c8       0x44 E:/WinAVR/lib/gcc/avr/3.4.6/avr5\libgcc.a(_udivmodsi4.o)
-                0x000009c8                __udivmodsi4
-                0x00000a0c                . = ALIGN (0x2)
->>>>>>> .r14
+ .text.libgcc   0x0000081a        0x0 c:/winavr-20071221rc1/bin/../lib/gcc/avr/4.2.2/avr5\libgcc.a(_exit.o)
+ .text.libgcc   0x0000081a        0x0 c:/winavr-20071221rc1/bin/../lib/gcc/avr/4.2.2/avr5\libgcc.a(_copy_data.o)
+ .text.libgcc   0x0000081a        0x0 c:/winavr-20071221rc1/bin/../lib/gcc/avr/4.2.2/avr5\libgcc.a(_clear_bss.o)
+ .text.libgcc   0x0000081a       0x3e c:/winavr-20071221rc1/bin/../lib/gcc/avr/4.2.2/avr5\libgcc.a(_mulsi3.o)
+                0x0000081a                __mulsi3
+ .text.libgcc   0x00000858       0x36 c:/winavr-20071221rc1/bin/../lib/gcc/avr/4.2.2/avr5\libgcc.a(_divmodsi4.o)
+                0x00000858                __divmodsi4
+ .text.libgcc   0x0000088e       0x38 c:/winavr-20071221rc1/bin/../lib/gcc/avr/4.2.2/avr5\libgcc.a(_prologue.o)
+                0x0000088e                __prologue_saves__
+ .text.libgcc   0x000008c6       0x36 c:/winavr-20071221rc1/bin/../lib/gcc/avr/4.2.2/avr5\libgcc.a(_epilogue.o)
+                0x000008c6                __epilogue_restores__
+ .text.libgcc   0x000008fc       0x44 c:/winavr-20071221rc1/bin/../lib/gcc/avr/4.2.2/avr5\libgcc.a(_udivmodsi4.o)
+                0x000008fc                __udivmodsi4
+                0x00000940                . = ALIGN (0x2)
  *(.fini9)
- .fini9         0x00000e5e        0x0 c:/winavr-20071221rc1/bin/../lib/gcc/avr/4.2.2/avr5\libgcc.a(_exit.o)
-                0x00000e5e                exit
-                0x00000e5e                _exit
+ .fini9         0x00000940        0x0 c:/winavr-20071221rc1/bin/../lib/gcc/avr/4.2.2/avr5\libgcc.a(_exit.o)
+                0x00000940                exit
+                0x00000940                _exit
  *(.fini9)
  *(.fini8)
  *(.fini8)
@@ -337,19 +280,11 @@ LOAD c:/winavr-20071221rc1/bin/../lib/gcc/avr/4.2.2/avr5\libgcc.a
  *(.fini1)
  *(.fini1)
  *(.fini0)
-<<<<<<< .mine
- .fini0         0x00000e5e        0x2 c:/winavr-20071221rc1/bin/../lib/gcc/avr/4.2.2/avr5\libgcc.a(_exit.o)
+ .fini0         0x00000940        0x2 c:/winavr-20071221rc1/bin/../lib/gcc/avr/4.2.2/avr5\libgcc.a(_exit.o)
  *(.fini0)
-                0x00000e60                _etext = .
-=======
-                0x00000a0c                _etext = .
->>>>>>> .r14
+                0x00000942                _etext = .
 
-<<<<<<< .mine
-.data           0x00800100        0x4 load address 0x00000e60
-=======
-.data           0x00800100        0x4 load address 0x00000a0c
->>>>>>> .r14
+.data           0x00800100        0x4 load address 0x00000942
                 0x00800100                PROVIDE (__data_start, .)
  *(.data)
  .data          0x00800100        0x0 c:/winavr-20071221rc1/bin/../lib/gcc/avr/4.2.2/../../../../avr/lib/avr5/crtm168.o
@@ -371,18 +306,18 @@ LOAD c:/winavr-20071221rc1/bin/../lib/gcc/avr/4.2.2/avr5\libgcc.a
                 0x00800104                _edata = .
                 0x00800104                PROVIDE (__data_end, .)
 
-.bss            0x00800104       0x73 load address 0x00000e64
+.bss            0x00800104       0x73 load address 0x00000946
                 0x00800104                PROVIDE (__bss_start, .)
  *(.bss)
  .bss           0x00800104        0x0 c:/winavr-20071221rc1/bin/../lib/gcc/avr/4.2.2/../../../../avr/lib/avr5/crtm168.o
  .bss           0x00800104        0xb drive.o
                 0x00800107                sensors_flag
                 0x00800109                distance
-                0x0080010d                angle
+                0x0080010b                angle
                 0x00800106                timer_on
-                0x0080010b                abs_distance
                 0x00800108                sensors_index
                 0x00800104                timer_cnt
+                0x0080010d                X
  .bss           0x0080010f        0x0 c:/winavr-20071221rc1/bin/../lib/gcc/avr/4.2.2/avr5\libgcc.a(_exit.o)
  .bss           0x0080010f        0x0 c:/winavr-20071221rc1/bin/../lib/gcc/avr/4.2.2/avr5\libgcc.a(_copy_data.o)
  .bss           0x0080010f        0x0 c:/winavr-20071221rc1/bin/../lib/gcc/avr/4.2.2/avr5\libgcc.a(_clear_bss.o)
@@ -394,21 +329,12 @@ LOAD c:/winavr-20071221rc1/bin/../lib/gcc/avr/4.2.2/avr5\libgcc.a
  .bss           0x0080010f        0x0 c:/winavr-20071221rc1/bin/../lib/gcc/avr/4.2.2/avr5\libgcc.a(_udivmodsi4.o)
  *(.bss*)
  *(COMMON)
-<<<<<<< .mine
  COMMON         0x0080010f       0x68 drive.o
                 0x0080010f                sensors_in
                 0x00800143                sensors
                 0x00800177                PROVIDE (__bss_end, .)
-                0x00000e60                __data_load_start = LOADADDR (.data)
-                0x00000e64                __data_load_end = (__data_load_start + SIZEOF (.data))
-=======
- COMMON         0x0080010d       0x68 drive.o
-                0x0080010d                sensors_in
-                0x00800141                sensors
-                0x00800175                PROVIDE (__bss_end, .)
-                0x00000a0c                __data_load_start = LOADADDR (.data)
-                0x00000a10                __data_load_end = (__data_load_start + SIZEOF (.data))
->>>>>>> .r14
+                0x00000942                __data_load_start = LOADADDR (.data)
+                0x00000946                __data_load_end = (__data_load_start + SIZEOF (.data))
 
 .noinit         0x00800177        0x0
                 0x00800177                PROVIDE (__noinit_start, .)
@@ -474,61 +400,36 @@ LOAD c:/winavr-20071221rc1/bin/../lib/gcc/avr/4.2.2/avr5\libgcc.a
                 0x00000000       0x20 drive.o
 
 .debug_pubnames
-                0x00000000      0x140
+                0x00000000      0x13f
  *(.debug_pubnames)
  .debug_pubnames
-                0x00000000      0x140 drive.o
+                0x00000000      0x13f drive.o
 
-<<<<<<< .mine
-.debug_info     0x00000000      0xdc9
-=======
-.debug_info     0x00000000      0x3b3
->>>>>>> .r14
+.debug_info     0x00000000      0x957
  *(.debug_info)
-<<<<<<< .mine
- .debug_info    0x00000000      0xdc9 drive.o
-=======
- .debug_info    0x00000000      0x3b3 drive.o
->>>>>>> .r14
+ .debug_info    0x00000000      0x957 drive.o
  *(.gnu.linkonce.wi.*)
 
-.debug_abbrev   0x00000000      0x1c0
+.debug_abbrev   0x00000000      0x1b6
  *(.debug_abbrev)
- .debug_abbrev  0x00000000      0x1c0 drive.o
+ .debug_abbrev  0x00000000      0x1b6 drive.o
 
-<<<<<<< .mine
-.debug_line     0x00000000      0xc49
-=======
-.debug_line     0x00000000      0x8b2
->>>>>>> .r14
+.debug_line     0x00000000      0x7f9
  *(.debug_line)
-<<<<<<< .mine
- .debug_line    0x00000000      0xc49 drive.o
-=======
- .debug_line    0x00000000      0x8b2 drive.o
->>>>>>> .r14
+ .debug_line    0x00000000      0x7f9 drive.o
 
-.debug_frame    0x00000000       0xd0
+.debug_frame    0x00000000       0xe0
  *(.debug_frame)
- .debug_frame   0x00000000       0xd0 drive.o
+ .debug_frame   0x00000000       0xe0 drive.o
 
-<<<<<<< .mine
-.debug_str      0x00000000      0x212
-=======
-.debug_str      0x00000000      0x1e7
->>>>>>> .r14
+.debug_str      0x00000000      0x1b8
  *(.debug_str)
-<<<<<<< .mine
- .debug_str     0x00000000      0x212 drive.o
-                                0x25d (size before relaxing)
-=======
- .debug_str     0x00000000      0x1e7 drive.o
-                                0x230 (size before relaxing)
->>>>>>> .r14
+ .debug_str     0x00000000      0x1b8 drive.o
+                                0x1f4 (size before relaxing)
 
-.debug_loc      0x00000000       0xe3
+.debug_loc      0x00000000       0xa4
  *(.debug_loc)
- .debug_loc     0x00000000       0xe3 drive.o
+ .debug_loc     0x00000000       0xa4 drive.o
 
 .debug_macinfo
  *(.debug_macinfo)
@@ -538,6 +439,8 @@ LOAD linker stubs
 Cross Reference Table
 
 Symbol                                            File
+ReadX                                             drive.o
+X                                                 drive.o
 __bad_interrupt                                   c:/winavr-20071221rc1/bin/../lib/gcc/avr/4.2.2/../../../../avr/lib/avr5/crtm168.o
 __bss_end                                         c:/winavr-20071221rc1/bin/../lib/gcc/avr/4.2.2/avr5\libgcc.a(_clear_bss.o)
 __bss_start                                       c:/winavr-20071221rc1/bin/../lib/gcc/avr/4.2.2/avr5\libgcc.a(_clear_bss.o)
@@ -593,7 +496,6 @@ __vector_9                                        c:/winavr-20071221rc1/bin/../l
 __vector_default                                  c:/winavr-20071221rc1/bin/../lib/gcc/avr/4.2.2/../../../../avr/lib/avr5/crtm168.o
 __vectors                                         c:/winavr-20071221rc1/bin/../lib/gcc/avr/4.2.2/../../../../avr/lib/avr5/crtm168.o
 _exit                                             c:/winavr-20071221rc1/bin/../lib/gcc/avr/4.2.2/avr5\libgcc.a(_exit.o)
-abs_distance                                      drive.o
 angle                                             drive.o
 baud                                              drive.o
 byteTx                                            drive.o
