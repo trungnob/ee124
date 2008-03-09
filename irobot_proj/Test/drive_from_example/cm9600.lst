@@ -1,0 +1,677 @@
+   1               		.file	"cm9600.c"
+   2               		.arch atmega168
+   3               	__SREG__ = 0x3f
+   4               	__SP_H__ = 0x3e
+   5               	__SP_L__ = 0x3d
+   6               	__tmp_reg__ = 0
+   7               	__zero_reg__ = 1
+   8               		.global __do_copy_data
+   9               		.global __do_clear_bss
+  17               	.Ltext0:
+  18               		.lcomm gXringNdx,1
+  19               		.data
+  22               	gBitnum:
+  23 0000 01        		.byte	1
+  24               		.lcomm gXmtState,1
+  25               		.lcomm gRhead,1
+  28               	gRcvrEnabled:
+  29 0001 01        		.byte	1
+  30               		.lcomm gRtail,1
+  31               		.text
+  32               	.global	aux_rcv_enable
+  34               	aux_rcv_enable:
+  35               	.LFB8:
+  36               	.LM1:
+  37               	/* prologue: frame size=0 */
+  38               	/* prologue end (size=0) */
+  39               	.LM2:
+  40 0000 81E0      		ldi r24,lo8(1)
+  41 0002 8093 0000 		sts gRcvrEnabled,r24
+  42               	/* epilogue: frame size=0 */
+  43 0006 0895      		ret
+  44               	/* epilogue end (size=1) */
+  45               	/* function aux_rcv_enable size 4 (3) */
+  46               	.LFE8:
+  48               	.global	init_aux_UART
+  50               	init_aux_UART:
+  51               	.LFB2:
+  52               	.LM3:
+  53               	/* prologue: frame size=0 */
+  54 0008 1F93      		push r17
+  55               	/* prologue end (size=1) */
+  56 000a 162F      		mov r17,r22
+  57               	.LM4:
+  58               	/* #APP */
+  59 000c F894      		cli
+  60               	.LM5:
+  61               	/* #NOAPP */
+  62 000e 8093 0000 		sts gAuxPort,r24
+  63               	.LM6:
+  64 0012 1092 0000 		sts gXringNdx,__zero_reg__
+  65               	.LM7:
+  66 0016 E091 0000 		lds r30,gXring
+  67 001a F091 0000 		lds r31,(gXring)+1
+  68 001e 1082      		st Z,__zero_reg__
+  69               	.LM8:
+  70 0020 1092 0000 		sts gXmtState,__zero_reg__
+  71               	.LM9:
+  72 0024 81E0      		ldi r24,lo8(1)
+  73 0026 8093 0000 		sts gBitnum,r24
+  74               	.LM10:
+  75 002a 1092 0000 		sts gRhead,__zero_reg__
+  76               	.LM11:
+  77 002e 1092 0000 		sts gRtail,__zero_reg__
+  78               	.LM12:
+  79 0032 0E94 0000 		call aux_rcv_enable
+  80               	.LM13:
+  81 0036 8091 0000 		lds r24,gAuxPort
+  82 003a 41E0      		ldi r20,lo8(1)
+  83 003c 50E0      		ldi r21,hi8(1)
+  84 003e 9A01      		movw r18,r20
+  85 0040 02C0      		rjmp 2f
+  86 0042 220F      	1:	lsl r18
+  87 0044 331F      		rol r19
+  88 0046 8A95      	2:	dec r24
+  89 0048 E2F7      		brpl 1b
+  90 004a 84B1      		in r24,36-0x20
+  91 004c 822B      		or r24,r18
+  92 004e 84B9      		out 36-0x20,r24
+  93               	.LM14:
+  94 0050 8091 0000 		lds r24,gAuxPort
+  95 0054 9A01      		movw r18,r20
+  96 0056 02C0      		rjmp 2f
+  97 0058 220F      	1:	lsl r18
+  98 005a 331F      		rol r19
+  99 005c 8A95      	2:	dec r24
+ 100 005e E2F7      		brpl 1b
+ 101 0060 85B1      		in r24,37-0x20
+ 102 0062 822B      		or r24,r18
+ 103 0064 85B9      		out 37-0x20,r24
+ 104               	.LM15:
+ 105 0066 8091 0000 		lds r24,gAuxPort
+ 106 006a 9A01      		movw r18,r20
+ 107 006c 02C0      		rjmp 2f
+ 108 006e 220F      	1:	lsl r18
+ 109 0070 331F      		rol r19
+ 110 0072 8A95      	2:	dec r24
+ 111 0074 E2F7      		brpl 1b
+ 112 0076 9FE3      		ldi r25,lo8(63)
+ 113 0078 9227      		eor r25,r18
+ 114 007a 8091 7E00 		lds r24,126
+ 115 007e 8923      		and r24,r25
+ 116 0080 8093 7E00 		sts 126,r24
+ 117               	.LM16:
+ 118 0084 8091 0000 		lds r24,gAuxPort
+ 119 0088 9A01      		movw r18,r20
+ 120 008a 02C0      		rjmp 2f
+ 121 008c 220F      	1:	lsl r18
+ 122 008e 331F      		rol r19
+ 123 0090 8A95      	2:	dec r24
+ 124 0092 E2F7      		brpl 1b
+ 125 0094 922F      		mov r25,r18
+ 126 0096 9095      		com r25
+ 127 0098 87B1      		in r24,39-0x20
+ 128 009a 8923      		and r24,r25
+ 129 009c 87B9      		out 39-0x20,r24
+ 130               	.LM17:
+ 131 009e 8091 0000 		lds r24,gAuxPort
+ 132 00a2 02C0      		rjmp 2f
+ 133 00a4 440F      	1:	lsl r20
+ 134 00a6 551F      		rol r21
+ 135 00a8 8A95      	2:	dec r24
+ 136 00aa E2F7      		brpl 1b
+ 137 00ac 88B1      		in r24,40-0x20
+ 138 00ae 842B      		or r24,r20
+ 139 00b0 88B9      		out 40-0x20,r24
+ 140               	.LM18:
+ 141 00b2 92E0      		ldi r25,lo8(2)
+ 142 00b4 9093 B000 		sts 176,r25
+ 143               	.LM19:
+ 144 00b8 1093 B300 		sts 179,r17
+ 145               	.LM20:
+ 146 00bc 1150      		subi r17,lo8(-(-1))
+ 147 00be 1093 B200 		sts 178,r17
+ 148               	.LM21:
+ 149 00c2 83E0      		ldi r24,lo8(3)
+ 150 00c4 8093 B100 		sts 177,r24
+ 151               	.LM22:
+ 152 00c8 9093 7000 		sts 112,r25
+ 153               	.LM23:
+ 154               	/* #APP */
+ 155 00cc 7894      		sei
+ 156               	/* #NOAPP */
+ 157               	/* epilogue: frame size=0 */
+ 158 00ce 1F91      		pop r17
+ 159 00d0 0895      		ret
+ 160               	/* epilogue end (size=2) */
+ 161               	/* function init_aux_UART size 108 (105) */
+ 162               	.LFE2:
+ 164               	.global	aux_UART_busy
+ 166               	aux_UART_busy:
+ 167               	.LFB5:
+ 168               	.LM24:
+ 169               	/* prologue: frame size=0 */
+ 170               	/* prologue end (size=0) */
+ 171               	.LM25:
+ 172 00d2 20E0      		ldi r18,lo8(0)
+ 173 00d4 30E0      		ldi r19,hi8(0)
+ 174 00d6 8091 0000 		lds r24,gXmtState
+ 175 00da 8823      		tst r24
+ 176 00dc 11F0      		breq .L4
+ 177               	.LM26:
+ 178 00de 21E0      		ldi r18,lo8(1)
+ 179 00e0 30E0      		ldi r19,hi8(1)
+ 180               	.L4:
+ 181               	.LM27:
+ 182 00e2 C901      		movw r24,r18
+ 183               	/* epilogue: frame size=0 */
+ 184 00e4 0895      		ret
+ 185               	/* epilogue end (size=1) */
+ 186               	/* function aux_UART_busy size 10 (9) */
+ 187               	.LFE5:
+ 189               	.global	ByteXmtAux
+ 191               	ByteXmtAux:
+ 192               	.LFB3:
+ 193               	.LM28:
+ 194               	/* prologue: frame size=0 */
+ 195 00e6 CF93      		push r28
+ 196               	/* prologue end (size=1) */
+ 197 00e8 C82F      		mov r28,r24
+ 198               	.LM29:
+ 199               	/* #APP */
+ 200 00ea 7894      		sei
+ 201               	.LM30:
+ 202               	/* #NOAPP */
+ 203 00ec 01C0      		rjmp .L6
+ 204               	.L8:
+ 205               	.LM31:
+ 206               	/* #APP */
+ 207 00ee 0000      		nop
+ 208               	/* #NOAPP */
+ 209               	.L6:
+ 210 00f0 0E94 0000 		call aux_UART_busy
+ 211 00f4 8823      		tst r24
+ 212 00f6 D9F7      		brne .L8
+ 213               	.LM32:
+ 214               	/* #APP */
+ 215 00f8 F894      		cli
+ 216               	.LM33:
+ 217               	/* #NOAPP */
+ 218 00fa C093 0000 		sts gUartXmt,r28
+ 219               	.LM34:
+ 220 00fe 81E0      		ldi r24,lo8(1)
+ 221 0100 8093 0000 		sts gXmtState,r24
+ 222               	.LM35:
+ 223               	/* #APP */
+ 224 0104 7894      		sei
+ 225               	/* #NOAPP */
+ 226               	/* epilogue: frame size=0 */
+ 227 0106 CF91      		pop r28
+ 228 0108 0895      		ret
+ 229               	/* epilogue end (size=2) */
+ 230               	/* function ByteXmtAux size 22 (19) */
+ 231               	.LFE3:
+ 233               	.global	aux_send_line
+ 235               	aux_send_line:
+ 236               	.LFB4:
+ 237               	.LM36:
+ 238               	/* prologue: frame size=0 */
+ 239 010a 1F93      		push r17
+ 240 010c CF93      		push r28
+ 241 010e DF93      		push r29
+ 242               	/* prologue end (size=3) */
+ 243 0110 EC01      		movw r28,r24
+ 244               	.LM37:
+ 245 0112 10E0      		ldi r17,lo8(0)
+ 246               	.LM38:
+ 247               	/* #APP */
+ 248 0114 7894      		sei
+ 249               	.LM39:
+ 250               	/* #NOAPP */
+ 251 0116 01C0      		rjmp .L10
+ 252               	.L12:
+ 253               	.LM40:
+ 254               	/* #APP */
+ 255 0118 0000      		nop
+ 256               	/* #NOAPP */
+ 257               	.L10:
+ 258 011a 0E94 0000 		call aux_UART_busy
+ 259 011e 8823      		tst r24
+ 260 0120 D9F7      		brne .L12
+ 261               	.LM41:
+ 262 0122 9E01      		movw r18,r28
+ 263 0124 2F5F      		subi r18,lo8(-(1))
+ 264 0126 3F4F      		sbci r19,hi8(-(1))
+ 265 0128 3093 0000 		sts (gXring)+1,r19
+ 266 012c 2093 0000 		sts gXring,r18
+ 267               	.LM42:
+ 268 0130 8981      		ldd r24,Y+1
+ 269               	.L18:
+ 270 0132 8823      		tst r24
+ 271 0134 31F0      		breq .L17
+ 272 0136 1F5F      		subi r17,lo8(-(1))
+ 273 0138 F901      		movw r30,r18
+ 274 013a E10F      		add r30,r17
+ 275 013c F11D      		adc r31,__zero_reg__
+ 276 013e 8081      		ld r24,Z
+ 277 0140 F8CF      		rjmp .L18
+ 278               	.L17:
+ 279               	.LM43:
+ 280               	/* #APP */
+ 281 0142 F894      		cli
+ 282               	.LM44:
+ 283               	/* #NOAPP */
+ 284 0144 1093 0000 		sts gXringNdx,r17
+ 285               	.LM45:
+ 286 0148 8881      		ld r24,Y
+ 287 014a 8093 0000 		sts gUartXmt,r24
+ 288               	.LM46:
+ 289 014e 81E0      		ldi r24,lo8(1)
+ 290 0150 8093 0000 		sts gXmtState,r24
+ 291               	.LM47:
+ 292               	/* #APP */
+ 293 0154 7894      		sei
+ 294               	/* #NOAPP */
+ 295               	/* epilogue: frame size=0 */
+ 296 0156 DF91      		pop r29
+ 297 0158 CF91      		pop r28
+ 298 015a 1F91      		pop r17
+ 299 015c 0895      		ret
+ 300               	/* epilogue end (size=4) */
+ 301               	/* function aux_send_line size 46 (39) */
+ 302               	.LFE4:
+ 304               	.global	aux_char_rdy
+ 306               	aux_char_rdy:
+ 307               	.LFB6:
+ 308               	.LM48:
+ 309               	/* prologue: frame size=0 */
+ 310               	/* prologue end (size=0) */
+ 311               	.LM49:
+ 312 015e 9091 0000 		lds r25,gRhead
+ 313 0162 8091 0000 		lds r24,gRtail
+ 314 0166 9817      		cp r25,r24
+ 315 0168 38F0      		brlo .L20
+ 316               	.LM50:
+ 317 016a 8091 0000 		lds r24,gRhead
+ 318 016e 9091 0000 		lds r25,gRtail
+ 319 0172 891B      		sub r24,r25
+ 320 0174 9927      		clr r25
+ 321 0176 0895      		ret
+ 322               	.L20:
+ 323               	.LM51:
+ 324 0178 8091 0000 		lds r24,gRtail
+ 325 017c 9091 0000 		lds r25,gRhead
+ 326 0180 891B      		sub r24,r25
+ 327 0182 90E3      		ldi r25,lo8(48)
+ 328 0184 981B      		sub r25,r24
+ 329 0186 892F      		mov r24,r25
+ 330 0188 9927      		clr r25
+ 331               	.LM52:
+ 332 018a 0895      		ret
+ 333               	/* epilogue: frame size=0 */
+ 334               	/* epilogue: noreturn */
+ 335               	/* epilogue end (size=0) */
+ 336               	/* function aux_char_rdy size 23 (23) */
+ 337               	.LFE6:
+ 339               	.global	aux_read_char
+ 341               	aux_read_char:
+ 342               	.LFB7:
+ 343               	.LM53:
+ 344               	/* prologue: frame size=0 */
+ 345               	/* prologue end (size=0) */
+ 346               	.LM54:
+ 347 018c 8091 0000 		lds r24,gRtail
+ 348 0190 E82F      		mov r30,r24
+ 349 0192 FF27      		clr r31
+ 350 0194 E050      		subi r30,lo8(-(gRring))
+ 351 0196 F040      		sbci r31,hi8(-(gRring))
+ 352 0198 8F5F      		subi r24,lo8(-(1))
+ 353 019a 8093 0000 		sts gRtail,r24
+ 354 019e E081      		ld r30,Z
+ 355               	.LM55:
+ 356 01a0 8091 0000 		lds r24,gRtail
+ 357 01a4 8033      		cpi r24,lo8(48)
+ 358 01a6 10F0      		brlo .L23
+ 359               	.LM56:
+ 360 01a8 1092 0000 		sts gRtail,__zero_reg__
+ 361               	.L23:
+ 362               	.LM57:
+ 363 01ac 8E2F      		mov r24,r30
+ 364 01ae 9927      		clr r25
+ 365               	/* epilogue: frame size=0 */
+ 366 01b0 0895      		ret
+ 367               	/* epilogue end (size=1) */
+ 368               	/* function aux_read_char size 19 (18) */
+ 369               	.LFE7:
+ 371               	.global	aux_rcv_disable
+ 373               	aux_rcv_disable:
+ 374               	.LFB9:
+ 375               	.LM58:
+ 376               	/* prologue: frame size=0 */
+ 377               	/* prologue end (size=0) */
+ 378               	.LM59:
+ 379 01b2 1092 0000 		sts gRcvrEnabled,__zero_reg__
+ 380               	/* epilogue: frame size=0 */
+ 381 01b6 0895      		ret
+ 382               	/* epilogue end (size=1) */
+ 383               	/* function aux_rcv_disable size 3 (2) */
+ 384               	.LFE9:
+ 386               		.lcomm ringNdx.0,1
+ 387               		.lcomm irqcnt.1,1
+ 388               		.lcomm rcving.2,1
+ 389               		.lcomm bittime.3,1
+ 390               		.lcomm rcvbyte.4,1
+ 391               	.global	__vector_7
+ 393               	__vector_7:
+ 394               	.LFB10:
+ 395               	.LM60:
+ 396               	/* prologue: frame size=0 */
+ 397 01b8 1F92      		push __zero_reg__
+ 398 01ba 0F92      		push __tmp_reg__
+ 399 01bc 0FB6      		in __tmp_reg__,__SREG__
+ 400 01be 0F92      		push __tmp_reg__
+ 401 01c0 1124      		clr __zero_reg__
+ 402 01c2 2F93      		push r18
+ 403 01c4 3F93      		push r19
+ 404 01c6 8F93      		push r24
+ 405 01c8 9F93      		push r25
+ 406 01ca EF93      		push r30
+ 407 01cc FF93      		push r31
+ 408               	/* prologue end (size=11) */
+ 409               	.LM61:
+ 410 01ce 8091 0000 		lds r24,irqcnt.1
+ 411 01d2 8F5F      		subi r24,lo8(-(1))
+ 412 01d4 8093 0000 		sts irqcnt.1,r24
+ 413 01d8 8091 0000 		lds r24,irqcnt.1
+ 414 01dc 8330      		cpi r24,lo8(3)
+ 415 01de 10F0      		brlo .L26
+ 416               	.LM62:
+ 417 01e0 1092 0000 		sts irqcnt.1,__zero_reg__
+ 418               	.L26:
+ 419               	.LM63:
+ 420 01e4 8091 0000 		lds r24,gRcvrEnabled
+ 421 01e8 8823      		tst r24
+ 422 01ea 09F4      		brne .+2
+ 423 01ec 5FC0      		rjmp .L27
+ 424               	.LM64:
+ 425 01ee 3091 0000 		lds r19,rcving.2
+ 426 01f2 3323      		tst r19
+ 427 01f4 D1F1      		breq .L28
+ 428               	.LM65:
+ 429 01f6 9091 0000 		lds r25,irqcnt.1
+ 430 01fa 8091 0000 		lds r24,bittime.3
+ 431 01fe 9817      		cp r25,r24
+ 432 0200 09F0      		breq .+2
+ 433 0202 56C0      		rjmp .L36
+ 434               	.LM66:
+ 435 0204 8091 0000 		lds r24,rcvbyte.4
+ 436 0208 8695      		lsr r24
+ 437 020a 8093 0000 		sts rcvbyte.4,r24
+ 438               	.LM67:
+ 439 020e 86B1      		in r24,38-0x20
+ 440 0210 9927      		clr r25
+ 441 0212 2091 0000 		lds r18,gAuxPort
+ 442 0216 02C0      		rjmp 2f
+ 443 0218 9595      	1:	asr r25
+ 444 021a 8795      		ror r24
+ 445 021c 2A95      	2:	dec r18
+ 446 021e E2F7      		brpl 1b
+ 447 0220 80FF      		sbrs r24,0
+ 448 0222 05C0      		rjmp .L30
+ 449 0224 8091 0000 		lds r24,rcvbyte.4
+ 450 0228 8068      		ori r24,lo8(-128)
+ 451 022a 8093 0000 		sts rcvbyte.4,r24
+ 452               	.L30:
+ 453               	.LM68:
+ 454 022e 8091 0000 		lds r24,rcving.2
+ 455 0232 8F5F      		subi r24,lo8(-(1))
+ 456 0234 8093 0000 		sts rcving.2,r24
+ 457               	.LM69:
+ 458 0238 8091 0000 		lds r24,rcving.2
+ 459 023c 8A30      		cpi r24,lo8(10)
+ 460 023e C4F1      		brlt .L36
+ 461               	.LM70:
+ 462 0240 1092 0000 		sts rcving.2,__zero_reg__
+ 463               	.LM71:
+ 464 0244 9091 0000 		lds r25,gRhead
+ 465 0248 E92F      		mov r30,r25
+ 466 024a FF27      		clr r31
+ 467 024c E050      		subi r30,lo8(-(gRring))
+ 468 024e F040      		sbci r31,hi8(-(gRring))
+ 469 0250 8091 0000 		lds r24,rcvbyte.4
+ 470 0254 8083      		st Z,r24
+ 471 0256 9F5F      		subi r25,lo8(-(1))
+ 472 0258 9093 0000 		sts gRhead,r25
+ 473               	.LM72:
+ 474 025c 8091 0000 		lds r24,gRhead
+ 475 0260 8033      		cpi r24,lo8(48)
+ 476 0262 30F1      		brlo .L36
+ 477 0264 1092 0000 		sts gRhead,__zero_reg__
+ 478 0268 23C0      		rjmp .L36
+ 479               	.L28:
+ 480               	.LM73:
+ 481 026a 86B1      		in r24,38-0x20
+ 482 026c 9927      		clr r25
+ 483 026e 2091 0000 		lds r18,gAuxPort
+ 484 0272 02C0      		rjmp 2f
+ 485 0274 9595      	1:	asr r25
+ 486 0276 8795      		ror r24
+ 487 0278 2A95      	2:	dec r18
+ 488 027a E2F7      		brpl 1b
+ 489 027c 80FD      		sbrc r24,0
+ 490 027e 18C0      		rjmp .L36
+ 491               	.LM74:
+ 492 0280 8091 0000 		lds r24,irqcnt.1
+ 493 0284 8F5F      		subi r24,lo8(-(1))
+ 494 0286 8093 0000 		sts bittime.3,r24
+ 495               	.LM75:
+ 496 028a 8091 0000 		lds r24,bittime.3
+ 497 028e 8F5F      		subi r24,lo8(-(1))
+ 498 0290 8093 0000 		sts bittime.3,r24
+ 499 0294 8091 0000 		lds r24,bittime.3
+ 500 0298 8330      		cpi r24,lo8(3)
+ 501 029a 10F0      		brlo .L35
+ 502 029c 3093 0000 		sts bittime.3,r19
+ 503               	.L35:
+ 504               	.LM76:
+ 505 02a0 81E0      		ldi r24,lo8(1)
+ 506 02a2 8093 0000 		sts rcving.2,r24
+ 507               	.LM77:
+ 508 02a6 3093 0000 		sts rcvbyte.4,r19
+ 509 02aa 02C0      		rjmp .L36
+ 510               	.L27:
+ 511               	.LM78:
+ 512 02ac 8093 0000 		sts rcving.2,r24
+ 513               	.L36:
+ 514               	.LM79:
+ 515 02b0 8091 0000 		lds r24,irqcnt.1
+ 516 02b4 8823      		tst r24
+ 517 02b6 09F0      		breq .+2
+ 518 02b8 7DC0      		rjmp .L25
+ 519               	.LM80:
+ 520 02ba 8091 0000 		lds r24,gXmtState
+ 521 02be 282F      		mov r18,r24
+ 522 02c0 3327      		clr r19
+ 523 02c2 2230      		cpi r18,2
+ 524 02c4 3105      		cpc r19,__zero_reg__
+ 525 02c6 E9F0      		breq .L40
+ 526 02c8 2330      		cpi r18,3
+ 527 02ca 3105      		cpc r19,__zero_reg__
+ 528 02cc 24F4      		brge .L49
+ 529 02ce 2130      		cpi r18,1
+ 530 02d0 3105      		cpc r19,__zero_reg__
+ 531 02d2 31F0      		breq .L39
+ 532 02d4 6FC0      		rjmp .L25
+ 533               	.L49:
+ 534 02d6 2330      		cpi r18,3
+ 535 02d8 3105      		cpc r19,__zero_reg__
+ 536 02da 09F4      		brne .+2
+ 537 02dc 3EC0      		rjmp .L45
+ 538 02de 6AC0      		rjmp .L25
+ 539               	.L39:
+ 540               	.LM81:
+ 541 02e0 8091 0000 		lds r24,gAuxPort
+ 542 02e4 02C0      		rjmp 2f
+ 543 02e6 220F      	1:	lsl r18
+ 544 02e8 331F      		rol r19
+ 545 02ea 8A95      	2:	dec r24
+ 546 02ec E2F7      		brpl 1b
+ 547 02ee 922F      		mov r25,r18
+ 548 02f0 9095      		com r25
+ 549 02f2 85B1      		in r24,37-0x20
+ 550 02f4 8923      		and r24,r25
+ 551 02f6 85B9      		out 37-0x20,r24
+ 552               	.LM82:
+ 553 02f8 82E0      		ldi r24,lo8(2)
+ 554 02fa 8093 0000 		sts gXmtState,r24
+ 555               	.LM83:
+ 556 02fe 81E0      		ldi r24,lo8(1)
+ 557 0300 29C0      		rjmp .L52
+ 558               	.L40:
+ 559               	.LM84:
+ 560 0302 8091 0000 		lds r24,gUartXmt
+ 561 0306 9091 0000 		lds r25,gBitnum
+ 562 030a 8923      		and r24,r25
+ 563 030c 61F0      		breq .L41
+ 564               	.LM85:
+ 565 030e 8091 0000 		lds r24,gAuxPort
+ 566 0312 21E0      		ldi r18,lo8(1)
+ 567 0314 30E0      		ldi r19,hi8(1)
+ 568 0316 02C0      		rjmp 2f
+ 569 0318 220F      	1:	lsl r18
+ 570 031a 331F      		rol r19
+ 571 031c 8A95      	2:	dec r24
+ 572 031e E2F7      		brpl 1b
+ 573 0320 85B1      		in r24,37-0x20
+ 574 0322 822B      		or r24,r18
+ 575 0324 0DC0      		rjmp .L50
+ 576               	.L41:
+ 577               	.LM86:
+ 578 0326 2091 0000 		lds r18,gAuxPort
+ 579 032a 81E0      		ldi r24,lo8(1)
+ 580 032c 90E0      		ldi r25,hi8(1)
+ 581 032e 02C0      		rjmp 2f
+ 582 0330 880F      	1:	lsl r24
+ 583 0332 991F      		rol r25
+ 584 0334 2A95      	2:	dec r18
+ 585 0336 E2F7      		brpl 1b
+ 586 0338 982F      		mov r25,r24
+ 587 033a 9095      		com r25
+ 588 033c 85B1      		in r24,37-0x20
+ 589 033e 8923      		and r24,r25
+ 590               	.L50:
+ 591 0340 85B9      		out 37-0x20,r24
+ 592               	.LM87:
+ 593 0342 8091 0000 		lds r24,gBitnum
+ 594 0346 87FF      		sbrs r24,7
+ 595 0348 02C0      		rjmp .L43
+ 596               	.LM88:
+ 597 034a 83E0      		ldi r24,lo8(3)
+ 598 034c 31C0      		rjmp .L51
+ 599               	.L43:
+ 600               	.LM89:
+ 601 034e 8091 0000 		lds r24,gBitnum
+ 602 0352 880F      		lsl r24
+ 603               	.L52:
+ 604 0354 8093 0000 		sts gBitnum,r24
+ 605               	.LM90:
+ 606 0358 2DC0      		rjmp .L25
+ 607               	.L45:
+ 608               	.LM91:
+ 609 035a 8091 0000 		lds r24,gAuxPort
+ 610 035e 21E0      		ldi r18,lo8(1)
+ 611 0360 30E0      		ldi r19,hi8(1)
+ 612 0362 02C0      		rjmp 2f
+ 613 0364 220F      	1:	lsl r18
+ 614 0366 331F      		rol r19
+ 615 0368 8A95      	2:	dec r24
+ 616 036a E2F7      		brpl 1b
+ 617 036c 85B1      		in r24,37-0x20
+ 618 036e 822B      		or r24,r18
+ 619 0370 85B9      		out 37-0x20,r24
+ 620               	.LM92:
+ 621 0372 91E0      		ldi r25,lo8(1)
+ 622 0374 9093 0000 		sts gBitnum,r25
+ 623               	.LM93:
+ 624 0378 8091 0000 		lds r24,gXringNdx
+ 625 037c 8823      		tst r24
+ 626 037e B1F0      		breq .L46
+ 627               	.LM94:
+ 628 0380 8091 0000 		lds r24,ringNdx.0
+ 629 0384 E091 0000 		lds r30,gXring
+ 630 0388 F091 0000 		lds r31,(gXring)+1
+ 631 038c E80F      		add r30,r24
+ 632 038e F11D      		adc r31,__zero_reg__
+ 633 0390 890F      		add r24,r25
+ 634 0392 8093 0000 		sts ringNdx.0,r24
+ 635 0396 8081      		ld r24,Z
+ 636 0398 8093 0000 		sts gUartXmt,r24
+ 637               	.LM95:
+ 638 039c 9093 0000 		sts gXmtState,r25
+ 639               	.LM96:
+ 640 03a0 8091 0000 		lds r24,gXringNdx
+ 641 03a4 8150      		subi r24,lo8(-(-1))
+ 642 03a6 8093 0000 		sts gXringNdx,r24
+ 643 03aa 04C0      		rjmp .L25
+ 644               	.L46:
+ 645               	.LM97:
+ 646 03ac 8093 0000 		sts ringNdx.0,r24
+ 647               	.L51:
+ 648               	.LM98:
+ 649 03b0 8093 0000 		sts gXmtState,r24
+ 650               	.L25:
+ 651               	/* epilogue: frame size=0 */
+ 652 03b4 FF91      		pop r31
+ 653 03b6 EF91      		pop r30
+ 654 03b8 9F91      		pop r25
+ 655 03ba 8F91      		pop r24
+ 656 03bc 3F91      		pop r19
+ 657 03be 2F91      		pop r18
+ 658 03c0 0F90      		pop __tmp_reg__
+ 659 03c2 0FBE      		out __SREG__,__tmp_reg__
+ 660 03c4 0F90      		pop __tmp_reg__
+ 661 03c6 1F90      		pop __zero_reg__
+ 662 03c8 1895      		reti
+ 663               	/* epilogue end (size=11) */
+ 664               	/* function __vector_7 size 272 (250) */
+ 665               	.LFE10:
+ 667               		.lcomm gAuxPort,1
+ 668               		.lcomm gUartXmt,1
+ 669               		.lcomm gXring,2
+ 670               		.lcomm gRring,48
+ 671               	.Letext0:
+DEFINED SYMBOLS
+                            *ABS*:00000000 cm9600.c
+C:\DOCUME~1\Uyen\LOCALS~1\Temp/cc2Jbaaa.s:3      *ABS*:0000003f __SREG__
+C:\DOCUME~1\Uyen\LOCALS~1\Temp/cc2Jbaaa.s:4      *ABS*:0000003e __SP_H__
+C:\DOCUME~1\Uyen\LOCALS~1\Temp/cc2Jbaaa.s:5      *ABS*:0000003d __SP_L__
+C:\DOCUME~1\Uyen\LOCALS~1\Temp/cc2Jbaaa.s:6      *ABS*:00000000 __tmp_reg__
+C:\DOCUME~1\Uyen\LOCALS~1\Temp/cc2Jbaaa.s:7      *ABS*:00000001 __zero_reg__
+                             .bss:00000000 gXringNdx
+C:\DOCUME~1\Uyen\LOCALS~1\Temp/cc2Jbaaa.s:22     .data:00000000 gBitnum
+C:\DOCUME~1\Uyen\LOCALS~1\Temp/cc2Jbaaa.s:18     .bss:00000001 gXmtState
+C:\DOCUME~1\Uyen\LOCALS~1\Temp/cc2Jbaaa.s:24     .bss:00000002 gRhead
+C:\DOCUME~1\Uyen\LOCALS~1\Temp/cc2Jbaaa.s:28     .data:00000001 gRcvrEnabled
+C:\DOCUME~1\Uyen\LOCALS~1\Temp/cc2Jbaaa.s:25     .bss:00000003 gRtail
+C:\DOCUME~1\Uyen\LOCALS~1\Temp/cc2Jbaaa.s:34     .text:00000000 aux_rcv_enable
+C:\DOCUME~1\Uyen\LOCALS~1\Temp/cc2Jbaaa.s:50     .text:00000008 init_aux_UART
+C:\DOCUME~1\Uyen\LOCALS~1\Temp/cc2Jbaaa.s:390    .bss:00000009 gAuxPort
+C:\DOCUME~1\Uyen\LOCALS~1\Temp/cc2Jbaaa.s:668    .bss:0000000b gXring
+C:\DOCUME~1\Uyen\LOCALS~1\Temp/cc2Jbaaa.s:166    .text:000000d2 aux_UART_busy
+C:\DOCUME~1\Uyen\LOCALS~1\Temp/cc2Jbaaa.s:191    .text:000000e6 ByteXmtAux
+C:\DOCUME~1\Uyen\LOCALS~1\Temp/cc2Jbaaa.s:667    .bss:0000000a gUartXmt
+C:\DOCUME~1\Uyen\LOCALS~1\Temp/cc2Jbaaa.s:235    .text:0000010a aux_send_line
+C:\DOCUME~1\Uyen\LOCALS~1\Temp/cc2Jbaaa.s:306    .text:0000015e aux_char_rdy
+C:\DOCUME~1\Uyen\LOCALS~1\Temp/cc2Jbaaa.s:341    .text:0000018c aux_read_char
+C:\DOCUME~1\Uyen\LOCALS~1\Temp/cc2Jbaaa.s:669    .bss:0000000d gRring
+C:\DOCUME~1\Uyen\LOCALS~1\Temp/cc2Jbaaa.s:373    .text:000001b2 aux_rcv_disable
+C:\DOCUME~1\Uyen\LOCALS~1\Temp/cc2Jbaaa.s:30     .bss:00000004 ringNdx.0
+C:\DOCUME~1\Uyen\LOCALS~1\Temp/cc2Jbaaa.s:386    .bss:00000005 irqcnt.1
+C:\DOCUME~1\Uyen\LOCALS~1\Temp/cc2Jbaaa.s:387    .bss:00000006 rcving.2
+C:\DOCUME~1\Uyen\LOCALS~1\Temp/cc2Jbaaa.s:388    .bss:00000007 bittime.3
+C:\DOCUME~1\Uyen\LOCALS~1\Temp/cc2Jbaaa.s:389    .bss:00000008 rcvbyte.4
+C:\DOCUME~1\Uyen\LOCALS~1\Temp/cc2Jbaaa.s:393    .text:000001b8 __vector_7
+
+UNDEFINED SYMBOLS
+__do_copy_data
+__do_clear_bss
