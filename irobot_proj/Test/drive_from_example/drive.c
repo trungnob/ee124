@@ -29,8 +29,12 @@
 #define RIGHT_ANGLE 80
 #define FULL_ANGLE 170
 #define GRID_RES 200		//virtual grid resolution
-enum{F,B,L,R};
-uint8_t e =0 ;
+
+enum{F,B,L,R};				//indicating the orientation of the iRobot in comparation to its "predefined" direction
+							//F: iRobot facing the correct forward direction; B: iRobot facing the opposite to the correct direction
+							//L: facing to the left of the correct directon; R: facing to the right of the correct direction
+uint8_t e = 0 ;				//tolerance error of the ADC readings
+
 // Global variables
 volatile uint16_t timer_cnt = 0;
 volatile uint8_t timer_on = 0;
@@ -40,14 +44,11 @@ volatile uint8_t sensors_in[Sen6Size];
 volatile uint8_t sensors[Sen6Size];
 volatile int16_t distance = 0;
 volatile int16_t angle = 0;
-volatile uint8_t X = 0;
-volatile uint8_t Y = 0;
-volatile uint8_t X_max = 0;
-volatile uint8_t X_min = 0;
-volatile uint8_t Y_max = 0;
-volatile uint8_t Y_min = 0;
-volatile uint8_t X_mid = 0;
-volatile uint8_t Y_mid = 0;
+
+volatile uint8_t X = 0;		//Accelerometer X value
+volatile uint8_t Y = 0;		//Accelerometer Y value
+volatile uint8_t Y_min = 0;	//Y_min == Y value when iRobot facing uphill
+
 
 
 // Functions
@@ -60,9 +61,10 @@ void baud(uint8_t baud_code);
 void drive(int16_t velocity, int16_t radius);
 uint16_t randomAngle(void);
 void defineSongs(void);
-void  ReadADC_XY (void);
-void Rotate_and_Find();
-void Find_Forward_Direction();
+
+void  ReadADC_XY (void);		//Read the Accelerometer values
+void Rotate_and_Find();		//Rotate until the iRobot is facing uphill when it is on a ramp
+
 
 int main (void) 
 {
@@ -78,13 +80,13 @@ int main (void)
   uint8_t turning = 0;
   uint8_t backing_up = 0;
 
-  uint8_t on_track = 1;		//Uyen
-  uint8_t obsF = 0;
+  uint8_t on_track = 1;			//on_track==1 (on the right track); on_track==0 (still avoiding obstacle or cliffs)
+  uint8_t obsF = 0;				//indicate if there're obstacles in front, back, left, and right of iRobot
   uint8_t obsR = 0;
   uint8_t obsL = 0;
   uint8_t obsB = 0;   
   uint8_t orient = F;
-  uint8_t hill_climbing = 0;
+  uint8_t hill_climbing = 0;	//indicate if it is on a hill or flat surface
  	
   // Set up Create and module
   initialize();
@@ -104,24 +106,19 @@ int main (void)
   byteTx(CmdPlay);
   byteTx(RESET_SONG);
   delayAndUpdateSensors(750);
-   aux_rcv_disable();
-        sprintf(buf,"Hello World!! \n"  );
-        aux_send_line(buf);       
-        counter = 100000;
-		 while(counter != 0) // Delay
-        {
-          counter--;
-        }	
-		delayMs(1000);
-	ReadADC_XY();	
-	aux_rcv_disable();
-        sprintf(buf,"X = %d Y = %d\n",X, Y  );
-        aux_send_line(buf);       
-        counter = 100000;
-        while(counter != 0) // Delay
-        {
-          counter--;
-        }	
+  
+  ReadADC_XY();	
+  
+  //Debugging tools : sending values of X, Y through bluetooth device 
+  aux_rcv_disable();
+  sprintf(buf,"X = %d Y = %d\n",X, Y  );
+  aux_send_line(buf);       
+  counter = 100000;
+  while(counter != 0) // Delay
+    counter--;
+  	
+	
+	
   for(;;)
   {
 
@@ -169,35 +166,13 @@ int main (void)
         }	
 
 	
+		//checking if the iRobot is on a hill 
 		if ((abs(X-127) > 4) || (abs(Y-127) > 4)) {
 			Rotate_and_Find();
 			hill_climbing = 1;
 			drive(0,RadStraight);
 			delayMs(100);
-			//Find_Forward_Direction();
 		}	
-		
-		delayMs(20);
-		//aux_rcv_disable();
-       //sprintf(buf,"%d %d %d %d\n",X_max, X_min, Y_max, Y_min   );
-       // aux_send_line(buf);       
-        //counter = 100000;
-        //while(counter != 0) // Delay
-       // {
-       //   counter--;
-       // }	
-		
-		drive(0,RadStraight);
-		delayMs(20);
-		ReadADC_XY();
-		//aux_rcv_disable();
-        //sprintf(buf,"X = %d Y = %d\n",X, Y  );
-        //aux_send_line(buf);       
-        //counter = 100000;
-        //while(counter != 0) // Delay
-       // {
-        //  counter--;
-        //}	
 		
         
 		// Drive around until a button or unsafe condition is detected
@@ -214,7 +189,7 @@ int main (void)
             if ((-distance) > 10)
 			{
 				backing_up = 0;
-				distance = 0;  	//Uyen
+				distance = 0;  	
 			}  
             drive(-200, RadStraight);
           }
@@ -239,14 +214,6 @@ int main (void)
             || (sensors[SenCliffFR])
             || (sensors[SenCliffR]))  // Check for a bump or cliff
         {
-          // Set the turn parameters and reset the angle
-			/*if(sensors[SenBumpDrop] & BumpLeft)
-			{
-				turn_dir = 0;
-			}	
-			else
-				turn_dir = 1;
-			*/
 			drive (0,RadStraight);
 			turn_dir=1;	//left turn
 			turn_angle=RIGHT_ANGLE;
@@ -298,7 +265,6 @@ int main (void)
 			}
 			else if (orient == R)
 			{
-				obsR=1;
 				if ((sensors[SenBumpDrop] & BumpEither)||sensors[SenCliffFL]||sensors[SenCliffFR])
 					obsR=1;
 				else if (sensors[SenCliffL])
@@ -345,12 +311,9 @@ int main (void)
 			}
 			backing_up = 1;
 			turning = 1;
-			//if (distance > GRID_RES)
-			//	distance = distance - GRID_RES;
 			distance = 0;
 			angle = 0;
-			//turn_angle = 90;//randomAngle();
-			on_track = 0;		//Uyen
+			on_track = 0;		
 
           // Play the bump song
           byteTx(CmdPlay);
@@ -407,10 +370,12 @@ int main (void)
         {
 		
           // Otherwise, drive straight
-		  if (hill_climbing ) {
-		  delayMs(100);
+		  if (hill_climbing ) 
+		  {
+			delayMs(100);
 			ReadADC_XY();
 			
+			// Check if iRobot reaches the top of the hill
 			if ((abs(X-127) < 2) && (abs(Y-127) < 2)) 
 			{
 				drive(100, RadStraight);
@@ -418,6 +383,7 @@ int main (void)
 				break;
 			}	
 		  }
+		  
           drive(200, RadStraight);
 		  obsR=0;
 		  obsL=0;
@@ -493,7 +459,8 @@ int main (void)
           }
         }
 
-        // wait a little more than one robot tick for sensors to update
+       
+		// wait a little more than one robot tick for sensors to update
         delayAndUpdateSensors(20);
       }
 
@@ -510,81 +477,44 @@ int main (void)
   }
 }
 
-void Find_Forward_Direction() 
-{
-	uint32_t counter;
-	uint8_t buf[32];
-	int8_t direction = RadCCW;
-	ReadADC_XY();
-	
-	if (X>=128 ) direction = RadCCW;
-	else  direction  = RadCW;
-	
-	while ((abs(Y-(Y_min-1)) > 3) || ((abs(X-127)) > 2))
-	{	drive(70,direction);	
-		delayMs(200);
-		drive (0, RadStraight);
-		delayMs(100);
-		ReadADC_XY();
-	}	
-	drive (0, RadStraight);
-	delayMs(20);
-	
-	ReadADC_XY();
-	aux_rcv_disable();
-        sprintf(buf,"X1 = %d Y1 = %d\n",X, Y  );
-        aux_send_line(buf);       
-        counter = 100000;
-        while(counter != 0) // Delay
-        {
-          counter--;
-        }	
-}
 
 void Rotate_and_Find(void)
 {
-	uint32_t counter;
-	uint16_t buf[32];
-	
+
 	Y_min = 118;
-    e=0;
+    e = 0;
 	int8_t direction = RadCCW;
 	
+	// Using X value to determine the direction to rotate
 	ReadADC_XY();
-	
-	if (X>=128 ) direction = RadCCW;
+	if (X >= 128 ) direction = RadCCW;
 	else  direction  = RadCW;
 	
+	// Rotating to face the hill-top within error tolerance e+2
 	while (abs(Y - Y_min) > e+2)
 	{
-		
-		//Y_min = Y;
 		drive(150,direction);	
-		
-	//	drive (0, RadStraight);
-		delayMs(100);
-		ReadADC_XY();
-		
+		ReadADC_XY();	
 	}
-	ReadADC_XY();
-	
-	if (X>=128 ) direction = RadCCW;
-	else  direction  = RadCW;
-	
 	
 	drive(0,RadStraight);
 	delayMs(1000);
 	ReadADC_XY();
+	
+	if (X >= 128 ) direction = RadCCW;
+	else  direction  = RadCW;
+	
+	// Rotating to face hill-top within error tolerance of e
+	// Rotate slower with stopping in between to stablize the iRobot to get rid of error of X, Y due to vibration
 	while ((abs(Y - Y_min) > e) || ((abs(X-126)) > 2))
 	{
-		
-		//Y_min = Y;
+	    // Rotate 100ms @ velocity 70
 		drive(70,direction);	
-		delayMs(100);
+		delayMs(100);	
+		// Stop to stablize the iRobot before updating values X,Y
 		drive (0, RadStraight);
 		delayMs(300);
 		ReadADC_XY();
-		
 	}
 	
 }
@@ -592,20 +522,53 @@ void Rotate_and_Find(void)
 
 void  ReadADC_XY (void)
 {
-  ADMUX &= ~(0x07) ; //deselect channel
-  ADMUX |= INCH_6; // set voltage reference, select channel C6
-  ADCSRA |= my_ADSC;
+  ADMUX &= ~(0x07) ; 	// deselect channel
+  ADMUX |= INCH_6; 		// select channel C6
+  ADCSRA |= my_ADSC;	// start converting
   while (ADCSRA  & my_ADSC);  //busy converting ...
   X = ADCH;
-  LED1On;
-  LED2On;
-  
-  ADMUX |= INCH_7; // set voltage reference, select channel C7
-  ADCSRA |= my_ADSC;
+
+  ADMUX |= INCH_7; 		// select channel C7
+  ADCSRA |= my_ADSC;	// start converting
   while (ADCSRA & my_ADSC);
   Y = ADCH;
-  
 }
+
+
+// Initialize the Mind Control's ATmega168 microcontroller
+void initialize(void)
+{
+  cli();
+
+  // Set I/O pins
+  DDRB = 0x10;
+  PORTB = 0xCF;
+  DDRC = 0x00;
+  PORTC = 0xFF;
+  DDRD = 0xE6;
+  PORTD = 0x7D;
+
+  // Set up timer 1 to generate an interrupt every 1 ms
+  TCCR1A = 0x00;
+  TCCR1B = (_BV(WGM12) | _BV(CS12));
+  OCR1A = 71;
+  TIMSK1 = _BV(OCIE1A);
+
+  // Set up the serial port with rx interrupt
+  UBRR0 = 19;
+  UCSR0B = (_BV(RXCIE0) | _BV(TXEN0) | _BV(RXEN0));
+  UCSR0C = (_BV(UCSZ00) | _BV(UCSZ01));
+
+  //Setting for ADC readings
+  PRR &= ~_BV(PRADC); 				// Turn off  power save
+  ADCSRA |= my_ADEN | ADPS_7;   	// Enabled, prescaler = 128
+  ADMUX |= REFS_1 | my_ADLAR;   	// set voltage reference to AVcc and Left Justified
+  
+  // Turn on interrupts
+  sei();
+}
+
+
 
 
 // Serial receive interrupt to store sensor values
@@ -688,40 +651,6 @@ void delayAndUpdateSensors(uint16_t time_ms)
   }
 }
 
-
-
-
-// Initialize the Mind Control's ATmega168 microcontroller
-void initialize(void)
-{
-  cli();
-
-  // Set I/O pins
-  DDRB = 0x10;
-  PORTB = 0xCF;
-  DDRC = 0x00;
-  PORTC = 0xFF;
-  DDRD = 0xE6;
-  PORTD = 0x7D;
-
-  // Set up timer 1 to generate an interrupt every 1 ms
-  TCCR1A = 0x00;
-  TCCR1B = (_BV(WGM12) | _BV(CS12));
-  OCR1A = 71;
-  TIMSK1 = _BV(OCIE1A);
-
-  // Set up the serial port with rx interrupt
-  UBRR0 = 19;
-  UCSR0B = (_BV(RXCIE0) | _BV(TXEN0) | _BV(RXEN0));
-  UCSR0C = (_BV(UCSZ00) | _BV(UCSZ01));
-
-  //Setting for ADC readings
-  PRR &= ~_BV(PRADC); // Turn off  power save
-  ADCSRA |= my_ADEN | ADPS_7; //(_BV(ADEN) | _BV(ADPS2) | _BV(ADPS1) | _BV(ADPS0)); // Enabled, prescaler = 128
-  ADMUX |= REFS_1 | my_ADLAR; // set voltage reference
-  // Turn on interrupts
-  sei();
-}
 
 
 
