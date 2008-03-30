@@ -60,7 +60,7 @@ TARGET = drive
 
 
 # List C source files here. (C dependencies are automatically generated.)
-SRC = $(TARGET).c
+SRC = $(TARGET).c cm9600.c
 
 
 # List Assembler source files here.

@@ -156,6 +156,7 @@ int main (void)
 		
 		ReadADC_XY();		//getting X, Y value
 
+		// for debugging purpose: sending out the X, Y values to a bluetooth device
 		aux_rcv_disable();
         sprintf(buf,"X = %d Y = %d\n",X, Y  );
         aux_send_line(buf);       
@@ -217,6 +218,8 @@ int main (void)
 			drive (0,RadStraight);
 			turn_dir=1;	//left turn
 			turn_angle=RIGHT_ANGLE;
+			
+			//Determine the iRobot orientation, and update its virtual environment specified by (obsF, obsR, obsL, obsF)
 			if (orient == F)
 			{
 				if ((sensors[SenBumpDrop] & BumpEither)||sensors[SenCliffFL]||sensors[SenCliffFR])
@@ -319,14 +322,19 @@ int main (void)
           byteTx(CmdPlay);
           byteTx(BUMP_SONG);
         }
-		//Uyen: drive forward 20mm and start turning back toward the "straight" direction
+		
+		// find the original track of the iRobot
 		else if (!on_track & !turning)  
 		{
-			if (distance > GRID_RES)//after moving 1 gid forward in the direction specified in sensbump else statement
+			//after moving 1 gid forward in the direction specified in sensbump else statement	
+			if (distance > GRID_RES)
 			{
 				angle = 0;
 				distance = 0;
 				turn_angle = RIGHT_ANGLE;
+				
+				//from the current orientation of the iRobot, it finds a way to get back to 
+				//to the right track
 			    if (orient==L)
 				{
 					obsF=0;
@@ -369,7 +377,7 @@ int main (void)
         else 
         {
 		
-          // Otherwise, drive straight
+         
 		  if (hill_climbing ) 
 		  {
 			delayMs(100);
@@ -384,6 +392,7 @@ int main (void)
 			}	
 		  }
 		  
+		  // Otherwise, drive straight
           drive(200, RadStraight);
 		  obsR=0;
 		  obsL=0;

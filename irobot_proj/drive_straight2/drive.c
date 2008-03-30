@@ -16,9 +16,9 @@
 #include <avr/io.h>
 #include <stdlib.h>
 #include "oi.h"
+//#include "adc.h"
+#include "cm9600.h"	//for debug
 
-#define USB 1
-#define CR8 2
 
 // Constants
 #define RESET_SONG 0
@@ -40,7 +40,8 @@ volatile uint8_t sensors_in[Sen6Size];
 volatile uint8_t sensors[Sen6Size];
 volatile int16_t distance = 0;
 volatile int16_t angle = 0;
-
+//volatile int16_t X = 0;
+//volatile int16_t Y = 0;
 
 
 // Functions
@@ -53,11 +54,12 @@ void baud(uint8_t baud_code);
 void drive(int16_t velocity, int16_t radius);
 uint16_t randomAngle(void);
 void defineSongs(void);
-void setSerial(uint8_t com);
-uint8_t getSerialDestination(void);
-void writeChar(char c, uint8_t com);
+//void  ReadADC_XY (void);
+
 int main (void) 
 {
+   uint32_t counter;
+   uint8_t buf[32];
   uint8_t leds_cnt = 99;
   uint8_t leds_state = 0;
   uint8_t leds_on = 1;
@@ -77,6 +79,7 @@ int main (void)
  	
   // Set up Create and module
   initialize();
+  init_aux_UART(AUX_EPORT_CENTER, AUX_BAUD_9600);	//added to debug
   LEDBothOff;
   powerOnRobot();
   byteTx(CmdStart);
@@ -96,6 +99,14 @@ int main (void)
 
   for(;;)
   {
+	 aux_rcv_disable();
+       sprintf(buf,"%d %d \n",sensors[SenChAvailable], sensors[SenBumpDrop]  );
+       aux_send_line(buf);       
+       counter = 100000;
+       while(counter != 0) // Delay
+       {
+          counter--;
+       }	
 
     if(++leds_cnt >= 100)
     {
@@ -124,22 +135,362 @@ int main (void)
 
     if(UserButtonPressed)
     {
-		
-	
-    }
+		// Play start song and wait
+		byteTx(CmdPlay);
+		byteTx(START_SONG);
+		delayAndUpdateSensors(2813);
+         aux_rcv_disable();
+       sprintf(buf,"%d %d \n",sensors[SenChAvailable], sensors[SenBumpDrop]  );
+       aux_send_line(buf);       
+       counter = 100000;
+       while(counter != 0) // Delay
+       {
+          counter--;
+       }	
+		// Drive around until a button or unsafe condition is detected
+		while(!(UserButtonPressed)
+            && (!sensors[SenChAvailable])
+			&& (!(sensors[SenBumpDrop] & WheelDropAll))
+        )
+		{
+		 aux_rcv_disable();
+       sprintf(buf,"Button Press! \n");
+       aux_send_line(buf);       
+       counter = 100000;
+       while(counter != 0) // Delay
+       {
+          counter--;
+       }
+	  aux_rcv_disable();
+       sprintf(buf,"%d %d \n",sensors[SenChAvailable], sensors[SenBumpDrop]  );
+       aux_send_line(buf);       
+       counter = 100000;
+       while(counter != 0) // Delay
+       {
+          counter--;
+       }	
+        // Keep turning until the specified angle is reached
+        if(turning)
+        {
+          if(backing_up)
+          {
+            if ((-distance) > 10)
+			{
+				backing_up = 0;
+				distance = 0;  	//Uyen
+			}  
+            drive(-200, RadStraight);
+          }
+          else
+          {
+            if(turn_dir)		//left turn
+            {
+              if(angle > turn_angle) 
+				turning = 0;
+              drive(200, RadCCW);
+            }
+            else
+            {
+              if((-angle) > turn_angle)
+                turning = 0;
+              drive(200, RadCW);
+            }
+          }
+        }
+        else if((sensors[SenBumpDrop] & BumpEither)||(sensors[SenCliffL])
+            || (sensors[SenCliffFL])
+            || (sensors[SenCliffFR])
+            || (sensors[SenCliffR]))  // Check for a bump or cliff
+        {
+          // Set the turn parameters and reset the angle
+			/*if(sensors[SenBumpDrop] & BumpLeft)
+			{
+				turn_dir = 0;
+			}	
+			else
+				turn_dir = 1;
+			*/
+			drive (0,RadStraight);
+			turn_dir=1;	//left turn
+			turn_angle=RIGHT_ANGLE;
+			if (orient == F)
+			{
+				if ((sensors[SenBumpDrop] & BumpEither)||sensors[SenCliffFL]||sensors[SenCliffFR])
+					obsF=1;
+				else if (sensors[SenCliffL])
+					obsL = 1;
+				else if (sensors[SenCliffR])
+					obsR = 1;
+				if (!obsL && !sensors[SenCliffFL])
+					orient=L; 
+				else if (!obsR && !sensors[SenCliffFR])
+				{
+					turn_dir=0;
+					orient=R;
+				}
+				else if (!obsB)
+				{
+					turn_angle=FULL_ANGLE;
+					orient=B;
+				}	
+				else 
+					break;
+			}
+			else if (orient == L)
+			{
+				if ((sensors[SenBumpDrop] & BumpEither)||sensors[SenCliffFL]||sensors[SenCliffFR])
+					obsL=1;
+				else if (sensors[SenCliffL])
+					obsB = 1;
+				else if (sensors[SenCliffR])
+					obsF = 1;
+				if (!obsF && !sensors[SenCliffFR])
+				{
+					turn_dir=0;
+					orient=F;
+				}
+				else if (!obsR)
+				{
+					turn_angle=FULL_ANGLE;
+					orient=R;
+				}
+				else if (!obsB && !sensors[SenCliffFL])
+					orient=B;
+				else 
+					break;
+			}
+			else if (orient == R)
+			{
+				obsR=1;
+				if ((sensors[SenBumpDrop] & BumpEither)||sensors[SenCliffFL]||sensors[SenCliffFR])
+					obsR=1;
+				else if (sensors[SenCliffL])
+					obsF = 1;
+				else if (sensors[SenCliffR])
+					obsB = 1;
+				if (!obsF && !sensors[SenCliffFL])
+					orient=F;
+				else if (!obsL)
+				{
+					turn_angle=FULL_ANGLE;
+					orient=L;
+				}
+				else if (!obsB && !sensors[SenCliffFR])
+				{
+					turn_dir=0;
+					orient=B;
+				}
+				else
+					break;
+			}
+			else 
+			{
+				if ((sensors[SenBumpDrop] & BumpEither)||sensors[SenCliffFL]||sensors[SenCliffFR])
+					obsB=1;
+				else if (sensors[SenCliffL])
+					obsR = 1;
+				else if (sensors[SenCliffR])
+					obsL = 1;
+				if (!obsF) 
+				{
+					turn_angle=FULL_ANGLE;
+					orient=F;
+				}
+				else if (!obsR && !sensors[SenCliffL])
+					orient=R;
+				else if (!obsL && !sensors[SenCliffR])
+				{
+					turn_dir=0;
+					orient=L;
+				}
+				else 
+					break;
+			}
+			backing_up = 1;
+			turning = 1;
+			//if (distance > GRID_RES)
+			//	distance = distance - GRID_RES;
+			distance = 0;
+			angle = 0;
+			//turn_angle = 90;//randomAngle();
+			on_track = 0;		//Uyen
 
+          // Play the bump song
+          byteTx(CmdPlay);
+          byteTx(BUMP_SONG);
+        }
+		//Uyen: drive forward 20mm and start turning back toward the "straight" direction
+		else if (!on_track & !turning)  
+		{
+			if (distance > GRID_RES)//after moving 1 gid forward in the direction specified in sensbump else statement
+			{
+				angle = 0;
+				distance = 0;
+				turn_angle = RIGHT_ANGLE;
+			    if (orient==L)
+				{
+					obsF=0;
+					obsB=0;
+					turn_dir=0;
+					orient=F;
+					on_track=1;
+					turning = 1;
+				}
+				else if (orient==R)
+				{
+					obsF=0;
+					obsB=0;
+					turn_dir=1;
+					orient=F;
+					on_track=1;
+					turning=1;
+				}
+				else if (orient==B)
+				{
+					if (obsL)	//if there is an obstacle on the left previously (likely to be a wall)
+					{
+						turn_dir=1;
+						orient=R;
+					}
+					else 
+					{
+						turn_dir=0;
+						orient=L;
+					}
+					obsL=0;
+					obsR=0;
+					turning=1;
+				}
+			}
+			else 
+				drive(200, RadStraight);
+		}
+		//Uyen: End
+        else 
+        {
+          // Otherwise, drive straight
+          drive(200, RadStraight);
+		  obsR=0;
+		  obsL=0;
+		}
+
+
+        // Flash the leds in sequence
+        if(++leds_cnt >= 10)
+        {
+          leds_cnt = 0;
+          if(turning)
+          {
+            // Flash backward while turning
+            if(leds_state == 0)
+              leds_state = 4;
+            else
+              leds_state--;
+          }
+          else
+          {
+            if(leds_state == 4)
+              leds_state = 0;
+            else
+              leds_state++;
+          }
+
+          if(leds_state == 0)
+          {
+            // robot Power LED Amber
+            byteTx(CmdLeds);
+            byteTx(0x00);
+            byteTx(128);
+            byteTx(255);
+            LEDBothOff;
+          }
+          else if(leds_state == 1)
+          {
+            // Play LED on
+            byteTx(CmdLeds);
+            byteTx(LEDPlay);
+            byteTx(0);
+            byteTx(0);
+            LEDBothOff;
+          }
+          else if(leds_state == 2)
+          {
+            // Advance LED on
+            byteTx(CmdLeds);
+            byteTx(LEDAdvance);
+            byteTx(0);
+            byteTx(0);
+            LEDBothOff;
+          }
+          else if(leds_state == 3)
+          {
+            // Robot LEDs off, CM left LED on
+            byteTx(CmdLeds);
+            byteTx(0x00);
+            byteTx(0);
+            byteTx(0);
+            LED2On;
+            LED1Off;
+          }
+          else if(leds_state == 4)
+          {
+            // Robot LEDs off, CM right LED on
+            byteTx(CmdLeds);
+            byteTx(0x00);
+            byteTx(0);
+            byteTx(0);
+            LED1On;
+            LED2Off;
+          }
+        }
+
+        // wait a little more than one robot tick for sensors to update
+        delayAndUpdateSensors(20);
+		 aux_rcv_disable();
+       sprintf(buf,"%d %d \n",sensors[SenChAvailable], sensors[SenBumpDrop]  );
+       aux_send_line(buf);       
+       counter = 100000;
+      }
+
+      // Stop driving
+      drive(0, RadStraight);
+
+      // Play end song and wait
+      delayAndUpdateSensors(500);
+      byteTx(CmdPlay);
+      byteTx(END_SONG);
+      delayAndUpdateSensors(2438);
+
+    }
+  }
 }
 
 
 
-
+/*
+void  ReadADC_XY (void)
+{
+  ADMUX &= ~(0x07) ; //deselect channel
+  ADMUX |= INCH_6; // set voltage reference, select channel C6
+  ADCSRA |= my_ADSC;
+  while (ADCSRA  & my_ADSC);  //busy converting ...
+  X = ADC;
+  LED1On;
+  LED2On;
+  
+  ADMUX |= INCH_7; // set voltage reference, select channel C7
+  ADCSRA |= my_ADSC;
+  while (ADCSRA & my_ADSC);
+  Y = ADC;
+  
+}
+*/
 
 // Serial receive interrupt to store sensor values
-}
 SIGNAL(SIG_USART_RECV)
 {
+  sei();//for debug
   uint8_t temp;
-
 
   temp = UDR0;
 
@@ -157,6 +508,7 @@ SIGNAL(SIG_USART_RECV)
 // Timer 1 interrupt to time delays in ms
 SIGNAL(SIG_OUTPUT_COMPARE1A)
 {
+  sei();//for debug
   if(timer_cnt)
     timer_cnt--;
   else
@@ -184,11 +536,7 @@ void delayMs(uint16_t time_ms)
   while(timer_on) ;
 }
 
-int  ReadX()
-{
- ADSCRA = 
- 
-}
+
 
 
 // Delay for the specified time in ms and update sensor values
@@ -243,11 +591,11 @@ void initialize(void)
   UBRR0 = 19;
   UCSR0B = (_BV(RXCIE0) | _BV(TXEN0) | _BV(RXEN0));
   UCSR0C = (_BV(UCSZ00) | _BV(UCSZ01));
-  // Setup ADC 
-  // DIDR0 |= 0x20;  // disable digital input on C5
-  PRR &= ~_BV(PRADC); // Turn off ADC power save
-  ADCSRA = (_BV(ADEN) | _BV(ADPS2) | _BV(ADPS1) | _BV(ADPS0)); // Enabled, prescaler = 128
-  ADMUX = (_BV(REFS0) ); // set voltage reference, select channel C5
+
+  //Setting for ADC readings
+ // PRR &= ~_BV(PRADC); // Turn off  power save
+ // ADCSRA |= my_ADEN | ADPS_7; //(_BV(ADEN) | _BV(ADPS2) | _BV(ADPS1) | _BV(ADPS0)); // Enabled, prescaler = 128
+ // ADMUX |= REFS_1; // set voltage reference
   // Turn on interrupts
   sei();
 }
@@ -401,4 +749,8 @@ void defineSongs(void)
   byteTx(65);
   byteTx(24);
 }
+
+
+
+
 

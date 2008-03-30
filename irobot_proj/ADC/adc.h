@@ -22,11 +22,11 @@
 #define INCH_15 15			//GND
 
 //ADCSRA - ADC Control & Status Register A (8 bits)
-//#define ADEN	0x80		//ADC Enable
+#define my_ADEN	0x80		//ADC Enable
 #define my_ADSC	0x40		//ADC Start Conversion
-//#define ADATE	0x20		//ADC Auto Trigger Enable
-//#define ADIF	0x10		//ADC Interrupt Flag 
-//#define ADIE	0x08		//ADC Interrupt Enable
+#define my_ADATE	0x20		//ADC Auto Trigger Enable
+#define my_ADIF	0x10		//ADC Interrupt Flag 
+#define my_ADIE	0x08		//ADC Interrupt Enable
 	//division factor b/t system clock and ADC clock
 #define ADPS_0	0			//:2
 #define ADPS_1	1			//:2
@@ -38,7 +38,7 @@
 #define ADPS_7	7			//:128
 
 //ADCSRB - ADC Control and Status Register B (8 bits)
-//#define ACME	0x40		//?
+#define my_ACME	0x40		//?
 	//ADC Auto Trigger Source
 #define ADTS_0	0			//Free Running Mode	
 #define ADTS_1	1			//Analog Comparator
@@ -50,9 +50,9 @@
 #define ADTS_7	7			//Timer/Counter1 Capture Event
 
 //DIDR0 - Digital Input Disable Register 0
-//#define ADC0D	(1<<0)		//Set PC.0 as ADC0
-//#define ADC1D	(1<<1)		//set PC.1 as ADC1
-//#define ADC2D	(1<<2)   	//set PC.2 as ADC2	
-//#define ADC3D	(1<<3)		//set PC.3 as ADC3
-//#define ADC4D	(1<<4)		//set PC.4 as ADC4
-//#define ADC5D	(1<<5)		//set PC.5 as ADC5s
+#define ADC_0D	(1<<0)		//Set PC.0 as ADC0
+#define ADC_1D	(1<<1)		//set PC.1 as ADC1
+#define ADC_2D	(1<<2)   	//set PC.2 as ADC2	
+#define ADC_3D	(1<<3)		//set PC.3 as ADC3
+#define ADC_4D	(1<<4)		//set PC.4 as ADC4
+#define ADC_5D	(1<<5)		//set PC.5 as ADC5s
