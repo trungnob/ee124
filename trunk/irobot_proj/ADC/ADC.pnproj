@@ -1,1 +1,1 @@
-<Project name="ADC"><File path="adc.h"></File><File path="drive.c"></File><File path="makefile"></File><File path="oi.h"></File></Project>
+<Project name="ADC"><File path="adc.h"></File><File path="drive.c"></File><File path="makefile"></File><File path="oi.h"></File><File path="CM9600_320_Release\cm9600.h"></File><File path="CM9600_320_Release\cm9600.c"></File></Project>

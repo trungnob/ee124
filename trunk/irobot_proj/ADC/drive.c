@@ -17,6 +17,7 @@
 #include <stdlib.h>
 #include "oi.h"
 #include "adc.h"
+#include "cm9600.h"	//for debug
 #define USB 1
 #define CR8 2
 
@@ -56,7 +57,8 @@ void defineSongs(void);
 void setSerial(uint8_t com);
 uint8_t getSerialDestination(void);
 void writeChar(char c, uint8_t com);
-void ReadX(void);
+void Read_X(void);
+void Read_Y(void);
 int16_t ReadY(void);
 int main (void) 
 {
@@ -64,15 +66,19 @@ int main (void)
 uint8_t leds_cnt = 99;
   uint8_t leds_state = 0;
   uint8_t leds_on = 1;
- 
- 
+ //Trung Added to debug
+  volatile uint32_t counter;
+ //  volatile uint8_t outc = 64;
+  // volatile uint8_t inch = '0';
+   volatile uint8_t buf[32];
  
   // Set up Create and module
   initialize();
+  init_aux_UART(AUX_EPORT_CENTER, AUX_BAUD_9600);	//added to debug
   LEDBothOff;
   powerOnRobot();
   byteTx(CmdStart);
-  baud(Baud57600);
+  baud(Baud28800);
   defineSongs();
   
 // LED1On;
@@ -97,26 +103,48 @@ uint8_t leds_cnt = 99;
 
   for(;;)
   {
+
   LEDBothOff;
-   delayMs(1000);
-   ReadX();
-   
-   byteTx(CmdSong);
-   byteTx(4); 
-   byteTx(1);
-   byteTx(X>>3);
-   byteTx(64);
-   byteTx(CmdPlay);
-   byteTx(4);
-   delayMs(1500);
-   byteTx(CmdSong);
-   byteTx(6);
-   byteTx(1);
-   byteTx(64);
-   byteTx(64);
-   byteTx(CmdPlay);
-   byteTx(6);
-   delayMs(1500);
+  // delayMs(1000);
+  Read_X();
+	//ByteXmtAux(X & 0x00FF);
+	//ByteXmtAux(X>>8);
+	//ByteXmtAux(Y & 0x00FF);
+	//ByteXmtAux(Y >> 8);
+	
+     aux_rcv_disable();
+       sprintf(buf,"X=%d ",X);
+       aux_send_line(buf);       
+       counter = 100000;
+       while(counter != 0) // Delay
+       {
+          counter--;
+       }	
+	   Read_Y();
+ 	aux_rcv_disable();
+       sprintf(buf,"Y=%d \n",Y);
+       aux_send_line(buf);       
+       counter = 100000;
+       while(counter != 0) // Delay
+       {
+          counter--;
+       }	
+   //byteTx(CmdSong);
+   //byteTx(4); 
+   //byteTx(1);
+   //byteTx(X>>3);
+   //byteTx(64);
+   //byteTx(CmdPlay);
+   //byteTx(4);
+   //delayMs(1500);
+   //byteTx(CmdSong);
+   //byteTx(6);
+   //byteTx(1);
+   //byteTx(64);
+   //byteTx(64);
+   //byteTx(CmdPlay);
+   //byteTx(6);
+   //delayMs(1500);
   // LED1Off;
    //LED2On;
    
@@ -151,7 +179,7 @@ uint8_t leds_cnt = 99;
    LEDBothOn;
    }*/
 	
-	delayMs(1000);
+	//delayMs(1000);
   } 
 
 }
@@ -159,6 +187,7 @@ uint8_t leds_cnt = 99;
 
 SIGNAL(SIG_USART_RECV)
 {
+  sei();//for debug
   uint8_t temp;
 
 
@@ -178,6 +207,7 @@ SIGNAL(SIG_USART_RECV)
 // Timer 1 interrupt to time delays in ms
 SIGNAL(SIG_OUTPUT_COMPARE1A)
 {
+  sei(); //for debug
   if(timer_cnt)
     timer_cnt--;
   else
@@ -205,25 +235,25 @@ void delayMs(uint16_t time_ms)
   while(timer_on) ;
 }
 
-void  ReadX(void)
+void  Read_X(void)
 {
-  
-  ADMUX |= 0x06; // set voltage reference, select channel C6
- // while (ADCSRA & my_ADSC)  {
-  //} // ADC is still busy wait
+
+  ADMUX &= ~(0x07) ; //deselect channel
+  ADMUX |= INCH_6; //select channel C6
   ADCSRA |= 0x40;
-  while (ADCSRA  & my_ADSC);  //busy converting ...
+  while (ADCSRA  & my_ADSC);//busy converting ...
   X=ADC;
-  LED1On;
-  LED2On;
-  
+
+}
+
+void Read_Y(void)
+{
   ADMUX |= 0x07; // set voltage reference, select channel C7
   ADCSRA |= 0x40;
   while (ADCSRA & my_ADSC);
-  Y = ADC;
+  Y =  ADC;
   
 }
-
 
 // Delay for the specified time in ms and update sensor values
 void delayAndUpdateSensors(uint16_t time_ms)
@@ -282,7 +312,7 @@ void initialize(void)
   PRR &= ~_BV(PRADC); // Turn off  power save
   ADCSRA |= (_BV(ADEN) | _BV(ADPS2) | _BV(ADPS1) | _BV(ADPS0)); // Enabled, prescaler = 128
 // |=my_ADLAR;
-  ADMUX |= (0x40 ); // set voltage reference
+  ADMUX |= (0x40); // set voltage reference
   // Turn on interrupts
   sei();
 }

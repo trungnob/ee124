@@ -1,44 +1,33 @@
-drive.o: drive.c c:/winavr-20071221rc1/bin/../avr/include/avr/interrupt.h \
-  c:/winavr-20071221rc1/bin/../avr/include/avr/io.h \
-  c:/winavr-20071221rc1/bin/../avr/include/avr/sfr_defs.h \
-  c:/winavr-20071221rc1/bin/../avr/include/inttypes.h \
-  c:/winavr-20071221rc1/bin/../avr/include/stdint.h \
-  c:/winavr-20071221rc1/bin/../avr/include/avr/iom168.h \
-  c:/winavr-20071221rc1/bin/../avr/include/avr/iomx8.h \
-  c:/winavr-20071221rc1/bin/../avr/include/avr/portpins.h \
-  c:/winavr-20071221rc1/bin/../avr/include/avr/common.h \
-  c:/winavr-20071221rc1/bin/../avr/include/avr/version.h \
-  c:/winavr-20071221rc1/bin/../avr/include/avr/fuse.h \
-  c:/winavr-20071221rc1/bin/../avr/include/avr/lock.h \
-  c:/winavr-20071221rc1/bin/../avr/include/stdlib.h \
-  c:\winavr-20071221rc1\bin\../lib/gcc/avr/4.2.2/include/stddef.h oi.h
+drive.o: drive.c E:/WinAVR/avr/include/avr/interrupt.h \
+  E:/WinAVR/avr/include/avr/io.h E:/WinAVR/avr/include/avr/sfr_defs.h \
+  E:/WinAVR/avr/include/inttypes.h E:/WinAVR/avr/include/stdint.h \
+  E:/WinAVR/avr/include/avr/iom168.h E:/WinAVR/avr/include/avr/iomx8.h \
+  E:/WinAVR/avr/include/avr/portpins.h \
+  E:/WinAVR/avr/include/avr/version.h E:/WinAVR/avr/include/stdlib.h \
+  E:\WinAVR\bin/../lib/gcc/avr/3.4.6/include/stddef.h oi.h cm9600.h
 
-c:/winavr-20071221rc1/bin/../avr/include/avr/interrupt.h:
+E:/WinAVR/avr/include/avr/interrupt.h:
 
-c:/winavr-20071221rc1/bin/../avr/include/avr/io.h:
+E:/WinAVR/avr/include/avr/io.h:
 
-c:/winavr-20071221rc1/bin/../avr/include/avr/sfr_defs.h:
+E:/WinAVR/avr/include/avr/sfr_defs.h:
 
-c:/winavr-20071221rc1/bin/../avr/include/inttypes.h:
+E:/WinAVR/avr/include/inttypes.h:
 
-c:/winavr-20071221rc1/bin/../avr/include/stdint.h:
+E:/WinAVR/avr/include/stdint.h:
 
-c:/winavr-20071221rc1/bin/../avr/include/avr/iom168.h:
+E:/WinAVR/avr/include/avr/iom168.h:
 
-c:/winavr-20071221rc1/bin/../avr/include/avr/iomx8.h:
+E:/WinAVR/avr/include/avr/iomx8.h:
 
-c:/winavr-20071221rc1/bin/../avr/include/avr/portpins.h:
+E:/WinAVR/avr/include/avr/portpins.h:
 
-c:/winavr-20071221rc1/bin/../avr/include/avr/common.h:
+E:/WinAVR/avr/include/avr/version.h:
 
-c:/winavr-20071221rc1/bin/../avr/include/avr/version.h:
+E:/WinAVR/avr/include/stdlib.h:
 
-c:/winavr-20071221rc1/bin/../avr/include/avr/fuse.h:
-
-c:/winavr-20071221rc1/bin/../avr/include/avr/lock.h:
-
-c:/winavr-20071221rc1/bin/../avr/include/stdlib.h:
-
-c:\winavr-20071221rc1\bin\../lib/gcc/avr/4.2.2/include/stddef.h:
+E:\WinAVR\bin/../lib/gcc/avr/3.4.6/include/stddef.h:
 
 oi.h:
+
+cm9600.h:
